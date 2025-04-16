@@ -1,9 +1,12 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 import './App.css';
-import HomePage from './pages/Home';
-import RootLayout from './pages/Root';
-import AboutPage from './pages/About';
+import store from './redux/store.js';
+import HomePage from './pages/Home.jsx';
+import RootLayout from './pages/Root.jsx';
+import AboutPage from './pages/About.jsx';
+import WatchlistPage from './pages/Watchlist.jsx';
 
 const router = createBrowserRouter([
   {
@@ -18,12 +21,20 @@ const router = createBrowserRouter([
         path: 'about',
         element: <AboutPage />,
       },
+      {
+        path: 'watchlist',
+        element: <WatchlistPage />,
+      },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  );
 }
 
 export default App;
