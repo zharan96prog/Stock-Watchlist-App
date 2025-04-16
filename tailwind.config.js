@@ -1,8 +1,11 @@
 import { fontFamily } from 'tailwindcss/defaultTheme';
 
-/** @type {import('tailwindcss').Config} */
+// filepath: /Users/olenazharan/Desktop/React/Stock-Watchlist-App/tailwind.config.js
 export default {
-  content: ['./src/**/*.{html,js}'],
+  content: [
+    './index.html', // Include the root HTML file
+    './src/**/*.{js,jsx,ts,tsx}', // Include all JS/JSX/TS/TSX files in the src folder
+  ],
   theme: {
     extend: {
       colors: {
