@@ -85,7 +85,7 @@ const initialState = {
   user: null,
   token: null,
   loading: false,
-  isAuthChecking: true, // Додано для відслідковування стану автентифікації
+  isAuthChecking: true,
   error: null,
 };
 
@@ -136,10 +136,10 @@ const authSlice = createSlice({
           state.user = null;
           state.token = null;
         }
-        state.isAuthChecking = false; // Після завершення перевірки
+        state.isAuthChecking = false;
       })
       .addCase(checkUser.rejected, (state) => {
-        state.isAuthChecking = false; // Якщо сталася помилка
+        state.isAuthChecking = false;
         state.error = 'Error checking user authentication';
       });
   },

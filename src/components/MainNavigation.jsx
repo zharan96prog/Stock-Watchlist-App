@@ -5,11 +5,11 @@ import { logoutUser } from '../redux/slices/authSlice';
 export default function MainNavigation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isAuthChecking } = useSelector((state) => state.auth); // Правильний селектор
+  const { user, isAuthChecking } = useSelector((state) => state.auth);
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -29,7 +29,7 @@ export default function MainNavigation() {
             <li>
               <NavLink to="/about">About</NavLink>
             </li>
-            {!isAuthChecking && ( // Замість перевірки тільки на user, додайте перевірку на isAuthChecking
+            {!isAuthChecking && ( // Замість перевірки тільки на user, додав перевірку на isAuthChecking
               <>
                 {user ? (
                   <button onClick={handleLogout}>Logout</button>

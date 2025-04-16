@@ -69,7 +69,7 @@ function Spinner() {
 
 function AppWrapper() {
   const dispatch = useDispatch();
-  const isAuthChecking = useSelector((state) => state.auth.isAuthChecking); // Перевірка isAuthChecking з correct selector
+  const isAuthChecking = useSelector((state) => state.auth.isAuthChecking);
 
   useEffect(() => {
     dispatch(checkUser());
