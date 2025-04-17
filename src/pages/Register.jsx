@@ -61,7 +61,6 @@ const validatePassword = (password) => {
   const minLength = 6;
   const hasUpperCase = /[A-Z]/.test(password);
   const hasNumber = /[0-9]/.test(password);
-  const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/.test(password);
 
   if (password.length < minLength) {
     return 'Password must be at least 6 characters long';
@@ -71,9 +70,6 @@ const validatePassword = (password) => {
   }
   if (!hasNumber) {
     return 'Password must contain at least one number';
-  }
-  if (!hasSpecialChar) {
-    return 'Password must contain at least one special character';
   }
 
   return true;
