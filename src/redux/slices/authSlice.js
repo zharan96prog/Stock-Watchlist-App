@@ -70,13 +70,14 @@ export const logoutUser = createAsyncThunk(
 
 export const checkUser = createAsyncThunk('auth/checkUser', async () => {
   return new Promise((resolve) => {
-    onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await user.getIdToken();
         resolve({ token, email: user.email });
       } else {
         resolve(null);
       }
+      unsubscribe();
     });
   });
 });

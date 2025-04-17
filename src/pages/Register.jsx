@@ -5,14 +5,23 @@ import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../redux/slices/authSlice';
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState('');
 
   const handleRegister = (e) => {
     e.preventDefault();
+
+    const passwordValidation = validatePassword(password);
+    if (passwordValidation !== true) {
+      setPasswordError(passwordValidation);
+      return;
+    }
+    setPasswordError('');
+
     dispatch(registerUser({ email, password, navigate }));
   };
 
@@ -34,6 +43,7 @@ export default function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
           className="border p-2"
         />
+        {passwordError && <p className="text-red-500">{passwordError}</p>}
         <button
           type="submit"
           className="bg-green-500 text-white px-4 py-2 rounded"
@@ -46,3 +56,25 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+const validatePassword = (password) => {
+  const minLength = 6;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/.test(password);
+
+  if (password.length < minLength) {
+    return 'Password must be at least 6 characters long';
+  }
+  if (!hasUpperCase) {
+    return 'Password must contain at least one uppercase letter';
+  }
+  if (!hasNumber) {
+    return 'Password must contain at least one number';
+  }
+  if (!hasSpecialChar) {
+    return 'Password must contain at least one special character';
+  }
+
+  return true;
+};

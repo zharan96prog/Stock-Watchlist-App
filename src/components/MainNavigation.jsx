@@ -23,9 +23,11 @@ export default function MainNavigation() {
                 Home
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/watchlist">Watchlist</NavLink>
-            </li>
+            {user && (
+              <li>
+                <NavLink to="/watchlist">Watchlist</NavLink>
+              </li>
+            )}
             <li>
               <NavLink to="/about">About</NavLink>
             </li>

@@ -3,8 +3,7 @@ import {
   RouterProvider,
   Navigate,
 } from 'react-router-dom';
-import { Provider, useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { Provider, useSelector } from 'react-redux';
 
 import './App.css';
 import store from './redux/store.js';
@@ -14,7 +13,7 @@ import AboutPage from './pages/About.jsx';
 import WatchlistPage from './pages/Watchlist.jsx';
 import LoginPage from './pages/Login.jsx';
 import RegisterPage from './pages/Register.jsx';
-import { checkUser } from './redux/slices/authSlice.js';
+import { authLoader } from './loaders/authLoader.js';
 
 function ProtectedRoute({ children }) {
   const { user } = useSelector((state) => state.auth);
@@ -30,6 +29,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
+    // errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -41,11 +41,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'watchlist',
-        element: (
-          <ProtectedRoute>
-            <WatchlistPage />
-          </ProtectedRoute>
-        ),
+        element: <WatchlistPage />,
+        loader: authLoader,
       },
       {
         path: 'login',
@@ -59,33 +56,10 @@ const router = createBrowserRouter([
   },
 ]);
 
-function Spinner() {
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  );
-}
-
-function AppWrapper() {
-  const dispatch = useDispatch();
-  const isAuthChecking = useSelector((state) => state.auth.isAuthChecking);
-
-  useEffect(() => {
-    dispatch(checkUser());
-  }, [dispatch]);
-
-  if (isAuthChecking) {
-    return <Spinner />;
-  }
-
-  return <RouterProvider router={router} />;
-}
-
 function App() {
   return (
     <Provider store={store}>
-      <AppWrapper />
+      <RouterProvider router={router} />
     </Provider>
   );
 }
