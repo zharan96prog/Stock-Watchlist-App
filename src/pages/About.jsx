@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function AboutPage() {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
       <div className="max-w-2xl">
@@ -24,17 +27,19 @@ export default function AboutPage() {
             good investment
           </li>
         </ul>
-        <p className="mt-6 text-lg">
-          Ready to get started?{' '}
-          <Link to="/login" className="text-blue-500 underline">
-            Log in to your account
-          </Link>{' '}
-          or{' '}
-          <Link to="/register" className="text-blue-500 underline">
-            create an account
-          </Link>
-          .
-        </p>
+        {!user && (
+          <p className="mt-6 text-lg">
+            Ready to get started?{' '}
+            <Link to="/login" className="text-blue-500 underline">
+              Log in to your account
+            </Link>{' '}
+            or{' '}
+            <Link to="/register" className="text-blue-500 underline">
+              create an account
+            </Link>
+            .
+          </p>
+        )}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 
 import MainNavigation from '../components/MainNavigation';
 import { checkUser } from '../redux/slices/authSlice';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/UI/Spinner';
 
 export default function RootLayout() {
   const dispatch = useDispatch();
