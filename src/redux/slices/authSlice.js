@@ -17,63 +17,59 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 export const loginUser = createAsyncThunk(
-  'auth/loginUser',
-  async ({ email, password, navigate }, thunkAPI) => {
+  'auth/login',
+  async ({ email, password, navigate }, { rejectWithValue }) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const token = await userCredential.user.getIdToken();
+      const userData = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userData.user.getIdToken();
       navigate('/');
-      return { token, email: userCredential.user.email };
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return { email: userData.user.email, token };
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   }
 );
 
 export const registerUser = createAsyncThunk(
-  'auth/registerUser',
-  async ({ email, password, navigate }, thunkAPI) => {
+  'auth/register',
+  async ({ email, password, navigate }, { rejectWithValue }) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
+      const newUser = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      const token = await userCredential.user.getIdToken();
+      const token = await newUser.user.getIdToken();
       navigate('/');
-      return { token, email: userCredential.user.email };
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return { email: newUser.user.email, token };
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   }
 );
 
 export const logoutUser = createAsyncThunk(
-  'auth/logoutUser',
-  async (_, thunkAPI) => {
+  'auth/logout',
+  async (_, { rejectWithValue }) => {
     try {
       await signOut(auth);
       return true;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   }
 );
 
-export const checkUser = createAsyncThunk('auth/checkUser', async () => {
+export const checkUser = createAsyncThunk('auth/check', async () => {
   return new Promise((resolve) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await user.getIdToken();
-        resolve({ token, email: user.email });
+        resolve({ email: user.email, token });
       } else {
         resolve(null);
       }
@@ -85,65 +81,77 @@ export const checkUser = createAsyncThunk('auth/checkUser', async () => {
 const initialState = {
   user: null,
   token: null,
-  loading: false,
-  isAuthChecking: true,
+  isLoading: false,
+  isChecking: true,
   error: null,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    clearError(state) {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
+      // LOGIN
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.email;
-        state.token = action.payload.token;
+      .addCase(loginUser.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.user = payload.email;
+        state.token = payload.token;
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      .addCase(loginUser.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = payload;
       })
+
+      // REGISTER
       .addCase(registerUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.email;
-        state.token = action.payload.token;
+      .addCase(registerUser.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.user = payload.email;
+        state.token = payload.token;
       })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      .addCase(registerUser.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = payload;
       })
+
+      // LOGOUT
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
       })
+
+      // CHECK USER
       .addCase(checkUser.pending, (state) => {
-        state.isAuthChecking = true;
+        state.isChecking = true;
       })
-      .addCase(checkUser.fulfilled, (state, action) => {
-        if (action.payload) {
-          state.user = action.payload.email;
-          state.token = action.payload.token;
+      .addCase(checkUser.fulfilled, (state, { payload }) => {
+        state.isChecking = false;
+        if (payload) {
+          state.user = payload.email;
+          state.token = payload.token;
         } else {
           state.user = null;
           state.token = null;
         }
-        state.isAuthChecking = false;
       })
       .addCase(checkUser.rejected, (state) => {
-        state.isAuthChecking = false;
-        state.error = 'Error checking user authentication';
+        state.isChecking = false;
+        state.error = 'Authentication check failed';
       });
   },
 });
 
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;
