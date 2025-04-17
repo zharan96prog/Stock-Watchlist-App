@@ -1,8 +1,8 @@
 export default function WatchlistPage() {
   return (
-    <section>
-      <h2 className="text-xl font-semibold mb-4">My Watchlist</h2>
-      <div className="bg-primary-dark/10 p-4 rounded-lg border border-border">
+    <section className="mt-10 flex items-center justify-center">
+      <div className="w-1/2 bg-primary-dark/10 p-4 rounded-lg border border-border text-center">
+        <h2 className="text-xl font-semibold mb-4">My Watchlist</h2>
         <p className="text-sm text-primary-foreground/80">
           You don't have any companies listed yet. Add the first one!
         </p>
