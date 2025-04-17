@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function AboutPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
@@ -24,13 +26,13 @@ export default function AboutPage() {
         </ul>
         <p className="mt-6 text-lg">
           Ready to get started?{' '}
-          <a href="/login" className="text-blue-500 underline">
+          <Link to="/login" className="text-blue-500 underline">
             Log in to your account
-          </a>{' '}
+          </Link>{' '}
           or{' '}
-          <a href="/register" className="text-blue-500 underline">
+          <Link to="/register" className="text-blue-500 underline">
             create an account
-          </a>
+          </Link>
           .
         </p>
       </div>
