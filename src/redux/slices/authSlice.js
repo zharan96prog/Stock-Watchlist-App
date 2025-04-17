@@ -73,8 +73,8 @@ export const checkUser = createAsyncThunk('auth/check', async () => {
       } else {
         resolve(null);
       }
-      unsubscribe();
     });
+    return () => unsubscribe();
   });
 });
 

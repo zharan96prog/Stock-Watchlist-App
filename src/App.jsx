@@ -1,9 +1,5 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Navigate,
-} from 'react-router-dom';
-import { Provider, useSelector } from 'react-redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 import './App.css';
 import store from './redux/store.js';
@@ -15,16 +11,7 @@ import LoginPage from './pages/Login.jsx';
 import RegisterPage from './pages/Register.jsx';
 import { authLoader } from './loaders/authLoader.js';
 import ErrorPage from './pages/Error.jsx';
-
-function ProtectedRoute({ children }) {
-  const { user } = useSelector((state) => state.auth);
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
-  return children;
-}
+import { guestLoader } from './loaders/guestLoader.js';
 
 const router = createBrowserRouter([
   {
@@ -48,10 +35,12 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <LoginPage />,
+        loader: guestLoader,
       },
       {
         path: 'register',
         element: <RegisterPage />,
+        loader: guestLoader,
       },
     ],
   },
