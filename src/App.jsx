@@ -14,6 +14,7 @@ import WatchlistPage from './pages/Watchlist.jsx';
 import LoginPage from './pages/Login.jsx';
 import RegisterPage from './pages/Register.jsx';
 import { authLoader } from './loaders/authLoader.js';
+import ErrorPage from './pages/Error.jsx';
 
 function ProtectedRoute({ children }) {
   const { user } = useSelector((state) => state.auth);
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
-    // errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
