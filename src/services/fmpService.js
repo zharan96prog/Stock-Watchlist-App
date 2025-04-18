@@ -16,3 +16,13 @@ export async function searchCompanies(query) {
     throw error;
   }
 }
+
+export async function fetchCompanyDetails(symbol) {
+  const url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${API_KEY}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch company details');
+  }
+  const data = await response.json();
+  return data[0];
+}
