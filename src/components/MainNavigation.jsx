@@ -1,6 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../redux/slices/authSlice';
+import Button from './UI/Button';
+import classes from './MainNavigation.module.css';
 
 export default function MainNavigation() {
   const dispatch = useDispatch();
@@ -26,9 +28,9 @@ export default function MainNavigation() {
 
     return user ? (
       <li>
-        <button onClick={handleLogout} className="hover:underline">
+        <Button className={classes.button} onClick={handleLogout}>
           Logout
-        </button>
+        </Button>
       </li>
     ) : (
       <>

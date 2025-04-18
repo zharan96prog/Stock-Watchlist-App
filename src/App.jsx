@@ -12,6 +12,7 @@ import RegisterPage from './pages/Register.jsx';
 import { authLoader } from './loaders/authLoader.js';
 import ErrorPage from './pages/Error.jsx';
 import { guestLoader } from './loaders/guestLoader.js';
+import CompanyDetailPage from './pages/CompanyDetail.jsx';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
         path: 'watchlist',
         element: <WatchlistPage />,
         loader: authLoader,
+      },
+      {
+        path: 'watchlist/:companySymbol',
+        element: <CompanyDetailPage />,
       },
       {
         path: 'login',
