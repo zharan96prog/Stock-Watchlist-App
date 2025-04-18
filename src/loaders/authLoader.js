@@ -2,7 +2,11 @@ import { redirect } from 'react-router-dom';
 import store from '../redux/store';
 
 export async function authLoader() {
-  const { user } = store.getState().auth;
+  const { user, isChecking } = store.getState().auth;
+
+  if (isChecking) {
+    return null;
+  }
 
   if (!user) {
     throw redirect('/login');
