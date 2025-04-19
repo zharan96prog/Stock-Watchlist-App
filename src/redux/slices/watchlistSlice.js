@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  deleteDoc,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export const addCompanyToWatchlist = createAsyncThunk(
@@ -26,6 +32,21 @@ export const getWatchlist = createAsyncThunk(
         ...doc.data(),
       }));
       return watchlist;
+    } catch (error) {
+      console.error('Firestore error:', error);
+      return rejectWithValue(error.message || 'Unknown error occurred');
+    }
+  }
+);
+
+export const removeCompanyFromWatchlist = createAsyncThunk(
+  'watchlist/removeCompany',
+  async (companyId, { rejectWithValue }) => {
+    try {
+      const watchlistRef = collection(db, 'watchlist');
+      const docRef = doc(watchlistRef, companyId);
+      await deleteDoc(docRef);
+      return companyId;
     } catch (error) {
       console.error('Firestore error:', error);
       return rejectWithValue(error.message || 'Unknown error occurred');
@@ -62,6 +83,19 @@ const watchlistSlice = createSlice({
         state.companies = action.payload;
       })
       .addCase(getWatchlist.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(removeCompanyFromWatchlist.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(removeCompanyFromWatchlist.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.companies = state.companies.filter(
+          (company) => company.id !== action.payload
+        );
+      })
+      .addCase(removeCompanyFromWatchlist.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });

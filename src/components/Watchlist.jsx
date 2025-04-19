@@ -2,7 +2,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 
 import WatchlistItem from './WatchlistItem.jsx';
-import { getWatchlist } from '../redux/slices/watchlistSlice.js';
+import {
+  getWatchlist,
+  removeCompanyFromWatchlist,
+} from '../redux/slices/watchlistSlice.js';
 
 export default function Watchlist() {
   const dispatch = useDispatch();
@@ -16,8 +19,14 @@ export default function Watchlist() {
     }
   }, [dispatch, status]);
 
-  const onRemove = (symbol) => {
-    console.log(`Removing ${symbol} from watchlist`);
+  const onRemove = (id) => {
+    const proceed = window.confirm(
+      'Are you sure you want to remove this company from your watchlist?'
+    );
+
+    if (proceed) {
+      dispatch(removeCompanyFromWatchlist(id));
+    }
   };
 
   return (
@@ -34,7 +43,7 @@ export default function Watchlist() {
           <WatchlistItem
             key={company.id}
             company={company}
-            onRemove={onRemove}
+            onRemove={() => onRemove(company.id)}
           />
         ))
       )}
