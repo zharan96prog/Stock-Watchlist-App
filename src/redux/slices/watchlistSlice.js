@@ -9,7 +9,8 @@ export const addCompanyToWatchlist = createAsyncThunk(
       const docRef = await addDoc(collection(db, 'watchlist'), company);
       return { id: docRef.id, ...company };
     } catch (error) {
-      return rejectWithValue(error.message);
+      console.error('Firestore error:', error);
+      return rejectWithValue(error.message || 'Unknown error occurred');
     }
   }
 );

@@ -2,9 +2,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { fetchCompanyDetails } from '../services/fmpService';
-import Button from '../components/UI/Button';
-import { addCompanyToWatchlist } from '../redux/slices/watchlistSlice';
+import { fetchCompanyDetails } from '../services/fmpService.js';
+import Button from '../components/UI/Button.jsx';
+import { addCompanyToWatchlist } from '../redux/slices/watchlistSlice.js';
+import NotificationBadge from '../components/UI/NotificationBadge.jsx';
 
 export default function CompanyDetailPage() {
   const location = useLocation();
@@ -13,6 +14,7 @@ export default function CompanyDetailPage() {
   const [companyDetails, setCompanyDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     if (company?.symbol) {
@@ -43,11 +45,23 @@ export default function CompanyDetailPage() {
     };
 
     dispatch(addCompanyToWatchlist(companyData))
-      .then(() => {
-        console.log('Company added to watchlist successfully');
+      .then((result) => {
+        if (result.meta.requestStatus === 'fulfilled') {
+          setNotification({
+            message: 'Company added to watchlist successfully',
+            type: 'success',
+          });
+        } else {
+          throw new Error('Failed to add company to watchlist');
+        }
       })
       .catch((error) => {
-        console.error('Failed to add company to watchlist:', error);
+        console.error('Error adding company to watchlist:', error);
+        setNotification({
+          message:
+            'Failed to add company to watchlist. Please check your connection.',
+          type: 'error',
+        });
       });
   };
 
@@ -65,6 +79,13 @@ export default function CompanyDetailPage() {
 
   return (
     <section className="flex items-center justify-center h-screen">
+      {notification && (
+        <NotificationBadge
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
       <div className="bg-primary-dark/10 p-4 text-center h-screen">
         <div className="flex justify-between items-center px-4 py-2 text-primary-foreground">
           <Button
