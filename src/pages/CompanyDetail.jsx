@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { fetchCompanyDetails } from '../services/fmpService.js';
 import Button from '../components/UI/Button.jsx';
@@ -15,6 +15,7 @@ export default function CompanyDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState(null);
+  const watchlist = useSelector((state) => state.watchlist.companies);
 
   useEffect(() => {
     if (company?.symbol) {
@@ -38,6 +39,18 @@ export default function CompanyDetailPage() {
   const dispatch = useDispatch();
 
   const handleAddToWatchlist = () => {
+    const isAlreadyInWatchlist = watchlist.some(
+      (item) => item.symbol === companyDetails.symbol
+    );
+
+    if (isAlreadyInWatchlist) {
+      setNotification({
+        message: 'Company is already in your watchlist',
+        type: 'error',
+      });
+      return;
+    }
+
     const companyData = {
       symbol: companyDetails.symbol,
       name: companyDetails.companyName,
