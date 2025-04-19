@@ -108,10 +108,6 @@ npm start
 - Components: `Login`, `Register`
 - Create `loader` for protected pages
 
----
-
-### 🚧 In Progress / To Do
-
 #### 3. Watchlist
 
 - Create Redux slice: `watchlist`
@@ -122,6 +118,17 @@ npm start
 
 - Create search form (use **FMP Search Endpoint**)
 - Display search results
+
+---
+
+### 🚧 In Progress / To Do
+
+#### 3.1 Watchlist
+
+- Create a component to display the list of added companies
+- Add functionality to remove companies from the watchlist
+- Fetch and display the watchlist from Firebase
+- Add confirmation dialog before removing a company
 
 #### 5. Company Detail Page
 
