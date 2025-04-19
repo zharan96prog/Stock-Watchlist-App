@@ -115,7 +115,7 @@ npm start
 #### 3. Watchlist
 
 - Create Redux slice: `watchlist`
-- Wishlist component with “Add to Watchlist” button
+- Watchlist component with “Add to Watchlist” button
 - Persist list in `localStorage` or using **Firebase**
 
 #### 4. Company Search
