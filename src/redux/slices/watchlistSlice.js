@@ -15,6 +15,24 @@ export const addCompanyToWatchlist = createAsyncThunk(
   }
 );
 
+export const getWatchlist = createAsyncThunk(
+  'watchlist/getWatchlist',
+  async (_, { rejectWithValue }) => {
+    try {
+      const watchlistRef = collection(db, 'watchlist');
+      const snapshot = await watchlistRef.get();
+      const watchlist = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      return watchlist;
+    } catch (error) {
+      console.error('Firestore error:', error);
+      return rejectWithValue(error.message || 'Unknown error occurred');
+    }
+  }
+);
+
 const watchlistSlice = createSlice({
   name: 'watchlist',
   initialState: {
@@ -33,6 +51,17 @@ const watchlistSlice = createSlice({
         state.companies.push(action.payload);
       })
       .addCase(addCompanyToWatchlist.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(getWatchlist.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getWatchlist.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.companies = action.payload;
+      })
+      .addCase(getWatchlist.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });
