@@ -61,7 +61,11 @@ const watchlistSlice = createSlice({
     status: 'idle',
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setOptimisticUpdate: (state, action) => {
+      state.companies = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addCompanyToWatchlist.pending, (state) => {
@@ -102,4 +106,5 @@ const watchlistSlice = createSlice({
   },
 });
 
+export const { setOptimisticUpdate } = watchlistSlice.actions;
 export default watchlistSlice.reducer;
