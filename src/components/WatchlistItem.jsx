@@ -28,7 +28,7 @@ export default function WatchlistItem({ company, onRemove }) {
       <p>{company.symbol}</p>
       <Button
         onClick={(e) => {
-          e.Button.stopPropagation();
+          e.stopPropagation();
           handleRemove();
         }}
         disabled={isRemoving}
