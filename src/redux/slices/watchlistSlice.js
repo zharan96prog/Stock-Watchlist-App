@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export const addCompanyToWatchlist = createAsyncThunk(
@@ -20,7 +20,7 @@ export const getWatchlist = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const watchlistRef = collection(db, 'watchlist');
-      const snapshot = await watchlistRef.get();
+      const snapshot = await getDocs(watchlistRef);
       const watchlist = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
