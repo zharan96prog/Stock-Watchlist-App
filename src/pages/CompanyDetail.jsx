@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { fetchCompanyDetails } from '../services/fmpService';
 import Button from '../components/UI/Button';
+import { addCompanyToWatchlist } from '../redux/slices/watchlistSlice';
 
 export default function CompanyDetailPage() {
   const location = useLocation();
@@ -31,8 +33,22 @@ export default function CompanyDetailPage() {
     }
   }, [company?.symbol]);
 
+  const dispatch = useDispatch();
+
   const handleAddToWatchlist = () => {
-    console.log(`${companyDetails.companyName} added to watchlist`);
+    const companyData = {
+      symbol: companyDetails.symbol,
+      name: companyDetails.companyName,
+      exchangeShortName: companyDetails.exchangeShortName,
+    };
+
+    dispatch(addCompanyToWatchlist(companyData))
+      .then(() => {
+        console.log('Company added to watchlist successfully');
+      })
+      .catch((error) => {
+        console.error('Failed to add company to watchlist:', error);
+      });
   };
 
   if (loading) {
