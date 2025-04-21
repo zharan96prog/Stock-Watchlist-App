@@ -49,7 +49,7 @@ export default function MainNavigation() {
   };
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-md">
+    <header className="bg-primary text-primary-foreground shadow-md fixed top-0 w-full z-50">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold tracking-wide">Stock Watchlist</h1>
         <nav>

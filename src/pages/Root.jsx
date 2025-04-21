@@ -20,7 +20,7 @@ export default function RootLayout() {
   return (
     <div className="bg-primary-dark/10 min-h-screen text-primary-foreground font-sans">
       <MainNavigation className="max-w-6xl mx-auto" />
-      <main>{isAuthChecking ? <Spinner /> : <Outlet />}</main>
+      <main className="pt-16">{isAuthChecking ? <Spinner /> : <Outlet />}</main>
     </div>
   );
 }
