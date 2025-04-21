@@ -1,16 +1,29 @@
 import { useState } from 'react';
-
 import Button from './UI/Button.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { removeCompanyFromWatchlist } from '../redux/slices/watchlistSlice.js';
 
-export default function WatchlistItem({ company, onRemove }) {
+export default function WatchlistItem({ company }) {
   const [isRemoving, setIsRemoving] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleRemove = async () => {
-    setIsRemoving(true);
-    await onRemove();
-    setIsRemoving(false);
+    const proceed = window.confirm(
+      'Are you sure you want to remove this company from your watchlist?'
+    );
+
+    if (proceed) {
+      setIsRemoving(true);
+      try {
+        await dispatch(removeCompanyFromWatchlist(company.id)).unwrap();
+      } catch (error) {
+        console.error('Failed to remove company:', error);
+      } finally {
+        setIsRemoving(false);
+      }
+    }
   };
 
   const handleClick = () => {
@@ -20,21 +33,23 @@ export default function WatchlistItem({ company, onRemove }) {
   };
 
   return (
-    <div
-      className="flex w-full flex-row items-center justify-between p-4 border border-border rounded-lg bg-primary-dark/10 mb-4"
+    <tr
+      className="hover:bg-primary-dark/20 cursor-pointer"
       onClick={handleClick}
     >
-      <h3>{company.name}</h3>
-      <p>{company.symbol}</p>
-      <Button
-        onClick={(e) => {
-          e.stopPropagation();
-          handleRemove();
-        }}
-        disabled={isRemoving}
-      >
-        {isRemoving ? 'Removing...' : 'Remove'}
-      </Button>
-    </div>
+      <td className="px-4 py-2">{company.name}</td>
+      <td className="px-4 py-2">{company.symbol}</td>
+      <td className="px-4 py-2 text-center">
+        <Button
+          onClick={(e) => {
+            e.stopPropagation(); // Запобігаємо переходу при кліку на кнопку
+            handleRemove();
+          }}
+          disabled={isRemoving}
+        >
+          {isRemoving ? 'Removing...' : 'Remove'}
+        </Button>
+      </td>
+    </tr>
   );
 }
