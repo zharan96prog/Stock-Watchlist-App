@@ -138,22 +138,28 @@ export default function CompanyDetailPage() {
 
         <div className="content">
           <div className="border-b border-border mb-4">
-            <nav className="flex space-x-4">
-              {['overview', 'estimate', 'forecast', 'news', 'profile'].map(
-                (tabName) => (
-                  <button
-                    key={tabName}
-                    className={`text-sm font-medium px-4 py-2 border-b-2 ${
-                      tab === tabName
-                        ? 'border-primary text-primary'
-                        : 'border-transparent text-primary-foreground hover:border-primary hover:text-primary'
-                    }`}
-                    onClick={() => handleTabChange(tabName)}
-                  >
-                    {tabName.charAt(0).toUpperCase() + tabName.slice(1)}
-                  </button>
-                )
-              )}
+            <nav className="flex justify-between text-sm font-medium text-primary-foreground">
+              {[
+                'overview',
+                'estimate',
+                'forecast',
+                'financials',
+                'statistics',
+                'news',
+                'profile',
+              ].map((tabName) => (
+                <span
+                  key={tabName}
+                  className={`cursor-pointer px-2 ${
+                    tab === tabName
+                      ? 'text-primary font-semibold'
+                      : 'hover:text-primary'
+                  }`}
+                  onClick={() => handleTabChange(tabName)}
+                >
+                  {tabName.charAt(0).toUpperCase() + tabName.slice(1)}
+                </span>
+              ))}
             </nav>
           </div>
 
@@ -161,6 +167,8 @@ export default function CompanyDetailPage() {
             {tab === 'overview' && <p>Overview content goes here...</p>}
             {tab === 'estimate' && <p>Estimate content goes here...</p>}
             {tab === 'forecast' && <p>Forecast content goes here...</p>}
+            {tab === 'financials' && <p>Financials content goes here...</p>}
+            {tab === 'statistics' && <p>Statistics content goes here...</p>}
             {tab === 'news' && <p>News content goes here...</p>}
             {tab === 'profile' && <p>Profile content goes here...</p>}
           </div>
