@@ -80,7 +80,7 @@ export default function CompanyDetailPage() {
   };
 
   const handleTabChange = (newTab) => {
-    navigate(`/watchlist/${companySymbol}/${newTab}`); // Оновлення URL при зміні вкладки
+    navigate(`/watchlist/${companySymbol}/${newTab}`);
   };
 
   if (loading) {
@@ -102,6 +102,7 @@ export default function CompanyDetailPage() {
           message={notification.message}
           type={notification.type}
           onClose={() => setNotification(null)}
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 z-60"
         />
       )}
       <div className="p-4 text-center pb-14 h-max">
