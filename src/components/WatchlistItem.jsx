@@ -27,7 +27,7 @@ export default function WatchlistItem({ company }) {
   };
 
   const handleClick = () => {
-    navigate(`/watchlist/${company.symbol}`, {
+    navigate(`/watchlist/${company.symbol}/overview`, {
       state: { company },
     });
   };

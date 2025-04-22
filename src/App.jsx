@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         loader: authLoader,
       },
       {
-        path: 'watchlist/:companySymbol',
+        path: 'watchlist/:companySymbol/:tab',
         element: <CompanyDetailPage />,
       },
       {

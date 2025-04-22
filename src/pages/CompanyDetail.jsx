@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,9 +8,9 @@ import { addCompanyToWatchlist } from '../redux/slices/watchlistSlice.js';
 import NotificationBadge from '../components/UI/NotificationBadge.jsx';
 
 export default function CompanyDetailPage() {
-  const location = useLocation();
+  const { companySymbol, tab = 'overview' } = useParams();
   const navigate = useNavigate();
-  const company = location.state?.company;
+  const dispatch = useDispatch();
   const [companyDetails, setCompanyDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,29 +18,28 @@ export default function CompanyDetailPage() {
   const watchlist = useSelector((state) => state.watchlist.companies);
 
   useEffect(() => {
-    if (company?.symbol) {
-      const getCompanyDetails = async () => {
-        try {
-          const data = await fetchCompanyDetails(company.symbol);
-          setCompanyDetails(data);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      getCompanyDetails();
-    } else {
-      setLoading(false);
+    if (!companySymbol) {
+      navigate('/watchlist');
+      return;
     }
-  }, [company?.symbol]);
 
-  const dispatch = useDispatch();
+    const getCompanyDetails = async () => {
+      try {
+        const data = await fetchCompanyDetails(companySymbol);
+        setCompanyDetails(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getCompanyDetails();
+  }, [companySymbol, navigate]);
 
   const handleAddToWatchlist = () => {
     const isAlreadyInWatchlist = watchlist.some(
-      (item) => item.symbol === companyDetails.symbol
+      (item) => item.companySymbol === companyDetails.companySymbol
     );
 
     if (isAlreadyInWatchlist) {
@@ -52,7 +51,7 @@ export default function CompanyDetailPage() {
     }
 
     const companyData = {
-      symbol: companyDetails.symbol,
+      companySymbol: companyDetails.companySymbol,
       name: companyDetails.companyName,
       exchangeShortName: companyDetails.exchangeShortName,
     };
@@ -76,6 +75,10 @@ export default function CompanyDetailPage() {
           type: 'error',
         });
       });
+  };
+
+  const handleTabChange = (newTab) => {
+    navigate(`/watchlist/${companySymbol}/${newTab}`); // Оновлення URL при зміні вкладки
   };
 
   if (loading) {
@@ -103,7 +106,7 @@ export default function CompanyDetailPage() {
         <div className="flex justify-between items-center px-4 py-2 text-primary-foreground">
           <Button
             onClick={() => navigate('/watchlist')}
-            className="text-sm font-medium underline hover:opacity-80"
+            className="text-sm font-medium hover:opacity-80"
           >
             Back to My Watchlist
           </Button>
@@ -114,21 +117,61 @@ export default function CompanyDetailPage() {
             Add to My Watchlist
           </Button>
         </div>
+
+        <div className="flex flex-col items-start mb-4">
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">
+              {companyDetails.companyName}
+            </h2>
+            <span className="text-xl ml-2 text-primary-foreground/80">
+              ({companyDetails.companySymbol})
+            </span>
+          </div>
+          <div className="flex items-center">
+            <p className="text-sm text-primary-foreground/80">
+              {companyDetails.exchangeShortName}
+            </p>
+            <span>: {companyDetails.companySymbol}</span>
+          </div>
+          <h2>{companyDetails.price}</h2>
+        </div>
+
+        <div className="content">
+          <div className="border-b border-border mb-4">
+            <nav className="flex space-x-4">
+              {['overview', 'estimate', 'forecast', 'news', 'profile'].map(
+                (tabName) => (
+                  <button
+                    key={tabName}
+                    className={`text-sm font-medium px-4 py-2 border-b-2 ${
+                      tab === tabName
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-primary-foreground hover:border-primary hover:text-primary'
+                    }`}
+                    onClick={() => handleTabChange(tabName)}
+                  >
+                    {tabName.charAt(0).toUpperCase() + tabName.slice(1)}
+                  </button>
+                )
+              )}
+            </nav>
+          </div>
+
+          <div className="mt-4">
+            {tab === 'overview' && <p>Overview content goes here...</p>}
+            {tab === 'estimate' && <p>Estimate content goes here...</p>}
+            {tab === 'forecast' && <p>Forecast content goes here...</p>}
+            {tab === 'news' && <p>News content goes here...</p>}
+            {tab === 'profile' && <p>Profile content goes here...</p>}
+          </div>
+        </div>
+
         <img
           src={companyDetails.image}
           alt={`${companyDetails.companyName} logo`}
           className="mx-auto mb-4 h-20"
         />
-        <h2 className="text-xl font-semibold mb-4">
-          {companyDetails.companyName}
-        </h2>
-        <p className="text-sm text-primary-foreground/80">
-          Symbol: {companyDetails.symbol}
-        </p>
-        <p className="text-sm text-primary-foreground/80">
-          Exchange: {companyDetails.exchange} (
-          {companyDetails.exchangeShortName})
-        </p>
+
         <p className="text-sm text-primary-foreground/80">
           Industry: {companyDetails.industry}
         </p>
