@@ -18,7 +18,7 @@ export default function RootLayout() {
   }, [dispatch]);
 
   return (
-    <div className="bg-primary-dark/10 min-h-screen text-primary-foreground font-sans">
+    <div className="min-h-screen bg-primary-dark/10  text-primary-foreground font-sans">
       <MainNavigation className="max-w-6xl mx-auto" />
       <main className="pt-16">{isAuthChecking ? <Spinner /> : <Outlet />}</main>
     </div>

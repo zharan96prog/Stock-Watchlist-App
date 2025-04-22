@@ -95,7 +95,7 @@ export default function CompanyDetailPage() {
   }
 
   return (
-    <section className="flex items-center justify-center h-screen">
+    <section className="items-center justify-center w-full">
       {notification && (
         <NotificationBadge
           message={notification.message}
@@ -103,7 +103,7 @@ export default function CompanyDetailPage() {
           onClose={() => setNotification(null)}
         />
       )}
-      <div className="bg-primary-dark/10 p-4 text-center h-screen">
+      <div className="p-4 text-center pb-14 h-max">
         <div className="flex justify-between items-center px-4 py-2 text-primary-foreground">
           <Button
             onClick={() => navigate('/watchlist')}

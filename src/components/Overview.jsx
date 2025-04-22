@@ -43,7 +43,7 @@ export default function Overview({ companies }) {
             Read more
           </Link>
         </p>
-        <div className="col-span-3 grid grid-cols-2 gap-1 rounded-lg">
+        <div className="col-span-3 grid grid-cols-2 gap-1 mt-2 mb-2 rounded-lg text-left">
           <div>
             <p className="font-semibold text-primary-foreground">Industry</p>
             <p className="text-primary-foreground/80">{companies.industry}</p>
@@ -84,7 +84,9 @@ export default function Overview({ companies }) {
             </a>
           </div>
         </div>
-        <Button>Full Company Profile</Button>
+        <Link to={`/watchlist/${companies.symbol}/profile`}>
+          <Button>Full Company Profile</Button>
+        </Link>
       </div>
     </div>
   );
