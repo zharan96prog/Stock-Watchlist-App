@@ -26,3 +26,13 @@ export async function fetchCompanyDetails(symbol) {
   const data = await response.json();
   return data[0];
 }
+
+export async function fetchCompanyQuote(symbol) {
+  const url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${API_KEY}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch company quote');
+  }
+  const data = await response.json();
+  return data[0];
+}
