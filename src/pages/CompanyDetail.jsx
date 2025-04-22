@@ -137,8 +137,20 @@ export default function CompanyDetailPage() {
             <span>: {companyDetails.symbol}</span>
           </div>
           <div className="flex items-center">
-            <h2 className="text-xl font-semibold">{companyDetails.price}</h2>{' '}
-            <span>{companyDetails.changes}</span>
+            <h2 className="text-xl font-semibold mr-3">
+              {companyDetails.price.toFixed(2)}
+            </h2>
+            <span
+              className={`${
+                companyDetails.changes > 0
+                  ? 'text-green-500'
+                  : companyDetails.changes < 0
+                  ? 'text-red-500'
+                  : 'text-gray-500'
+              }`}
+            >
+              {companyDetails.changes.toFixed(2)}
+            </span>
           </div>
         </div>
 
