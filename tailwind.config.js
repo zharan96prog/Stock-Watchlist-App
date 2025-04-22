@@ -1,11 +1,8 @@
 import { fontFamily } from 'tailwindcss/defaultTheme';
+import lineClamp from '@tailwindcss/line-clamp';
 
-// filepath: /Users/olenazharan/Desktop/React/Stock-Watchlist-App/tailwind.config.js
 export default {
-  content: [
-    './index.html', // Include the root HTML file
-    './src/**/*.{js,jsx,ts,tsx}', // Include all JS/JSX/TS/TSX files in the src folder
-  ],
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -20,7 +17,7 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [lineClamp],
 };
 
 // Назва	      Tailwind class	        Значення	Призначення

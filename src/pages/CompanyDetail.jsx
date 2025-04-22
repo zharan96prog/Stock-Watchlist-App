@@ -6,6 +6,7 @@ import { fetchCompanyDetails } from '../services/fmpService.js';
 import Button from '../components/UI/Button.jsx';
 import { addCompanyToWatchlist } from '../redux/slices/watchlistSlice.js';
 import NotificationBadge from '../components/UI/NotificationBadge.jsx';
+import Overview from '../components/Overview.jsx';
 
 export default function CompanyDetailPage() {
   const { companySymbol, tab = 'overview' } = useParams();
@@ -124,16 +125,19 @@ export default function CompanyDetailPage() {
               {companyDetails.companyName}
             </h2>
             <span className="text-xl ml-2 text-primary-foreground/80">
-              ({companyDetails.companySymbol})
+              ({companyDetails.symbol})
             </span>
           </div>
           <div className="flex items-center">
             <p className="text-sm text-primary-foreground/80">
               {companyDetails.exchangeShortName}
             </p>
-            <span>: {companyDetails.companySymbol}</span>
+            <span>: {companyDetails.symbol}</span>
           </div>
-          <h2>{companyDetails.price}</h2>
+          <div className="flex items-center">
+            <h2 className="text-xl font-semibold">{companyDetails.price}</h2>{' '}
+            <span>{companyDetails.changes}</span>
+          </div>
         </div>
 
         <div className="content">
@@ -164,7 +168,7 @@ export default function CompanyDetailPage() {
           </div>
 
           <div className="mt-4">
-            {tab === 'overview' && <p>Overview content goes here...</p>}
+            {tab === 'overview' && <Overview companies={companyDetails} />}
             {tab === 'estimate' && <p>Estimate content goes here...</p>}
             {tab === 'forecast' && <p>Forecast content goes here...</p>}
             {tab === 'financials' && <p>Financials content goes here...</p>}
@@ -173,33 +177,6 @@ export default function CompanyDetailPage() {
             {tab === 'profile' && <p>Profile content goes here...</p>}
           </div>
         </div>
-
-        <img
-          src={companyDetails.image}
-          alt={`${companyDetails.companyName} logo`}
-          className="mx-auto mb-4 h-20"
-        />
-
-        <p className="text-sm text-primary-foreground/80">
-          Industry: {companyDetails.industry}
-        </p>
-        <p className="text-sm text-primary-foreground/80">
-          CEO: {companyDetails.ceo}
-        </p>
-        <p className="text-sm text-primary-foreground/80">
-          Market Cap: ${companyDetails.mktCap.toLocaleString()}
-        </p>
-        <p className="text-sm text-primary-foreground/80">
-          Description: {companyDetails.description}
-        </p>
-        <a
-          href={companyDetails.website}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 underline mt-4 block"
-        >
-          Visit Website
-        </a>
       </div>
     </section>
   );

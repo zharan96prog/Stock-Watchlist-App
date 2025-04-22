@@ -32,7 +32,7 @@ export default function WatchlistPage() {
   };
 
   const handleCompanyClick = (company) => {
-    navigate(`/watchlist/${company.symbol}`, { state: { company } });
+    navigate(`/watchlist/${company.symbol}/overview`, { state: { company } });
   };
 
   return (
