@@ -7,6 +7,7 @@ import Button from '../components/UI/Button.jsx';
 import { addCompanyToWatchlist } from '../redux/slices/watchlistSlice.js';
 import NotificationBadge from '../components/UI/NotificationBadge.jsx';
 import Overview from '../components/Overview.jsx';
+import Profile from '../components/Profile.jsx';
 
 export default function CompanyDetailPage() {
   const { companySymbol, tab = 'overview' } = useParams();
@@ -174,7 +175,7 @@ export default function CompanyDetailPage() {
             {tab === 'financials' && <p>Financials content goes here...</p>}
             {tab === 'statistics' && <p>Statistics content goes here...</p>}
             {tab === 'news' && <p>News content goes here...</p>}
-            {tab === 'profile' && <p>Profile content goes here...</p>}
+            {tab === 'profile' && <Profile companies={companyDetails} />}
           </div>
         </div>
       </div>
