@@ -58,7 +58,9 @@ export default function Overview({ companies }) {
           </div>
           <div>
             <p className="font-semibold text-primary-foreground">Employees</p>
-            <p className="text-primary-foreground/80">{companies.employees}</p>
+            <p className="text-primary-foreground/80">
+              {companies.fullTimeEmployees}
+            </p>
           </div>
           <div>
             <p className="font-semibold text-primary-foreground">

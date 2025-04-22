@@ -1,3 +1,5 @@
+import { countries } from 'countries-list';
+
 export default function Profile({ companies }) {
   return (
     <div className="grid grid-cols-3 gap-4">
@@ -16,7 +18,9 @@ export default function Profile({ companies }) {
         <div className="col-span-3 gap-1 mt-2 mb-2 rounded-lg text-left">
           <div className=" flex justify-between border-b border-border p-2">
             <p className="font-semibold text-primary-foreground">Country</p>
-            <p className="text-primary-foreground/80">{companies.country}</p>
+            <p className="text-primary-foreground/80">
+              {countries[companies.country].name}
+            </p>
           </div>
           <div className=" flex justify-between border-b border-border p-2">
             <p className="font-semibold text-primary-foreground">Industry</p>
@@ -62,7 +66,9 @@ export default function Profile({ companies }) {
           <p className="text-primary-foreground/80">
             {companies.city}, {companies.state} {companies.zip}
           </p>
-          <p className="text-primary-foreground/80">{companies.country}</p>
+          <p className="text-primary-foreground/80">
+            {countries[companies.country].name}
+          </p>
         </div>
 
         <h2 className="text-xl font-semibold mt-2">Stock Details</h2>
