@@ -17,6 +17,46 @@ export async function searchCompanies(query) {
   }
 }
 
+export async function fetchIncomeStatement(symbol) {
+  const url = `${BASE_URL}/income-statement/${symbol}?period=annual&apikey=${API_KEY}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch income statement');
+  }
+  const data = await response.json();
+  return data;
+}
+
+export async function fetchBalanceSheetStatement(symbol) {
+  const url = `${BASE_URL}/balance-sheet-statement/${symbol}?period=annual&apikey=${API_KEY}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch balance sheet statement');
+  }
+  const data = await response.json();
+  return data;
+}
+
+export async function fetchCashFlowStatement(symbol) {
+  const url = `${BASE_URL}/cash-flow-statement/${symbol}?period=annual&apikey=${API_KEY}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch cash flow statement');
+  }
+  const data = await response.json();
+  return data;
+}
+
+export async function fetchKeyMetrics(symbol) {
+  const url = `${BASE_URL}/key-metrics/${symbol}?period=annual&apikey=${API_KEY}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch key metrics');
+  }
+  const data = await response.json();
+  return data;
+}
+
 export async function fetchRatios(symbol) {
   const url = `${BASE_URL}/ratios/${symbol}?period=annual&apikey=${API_KEY}`;
 
@@ -28,7 +68,7 @@ export async function fetchRatios(symbol) {
   return data;
 }
 
-export async function getRating(symbol) {
+export async function fetchRating(symbol) {
   const url = `${BASE_URL}/rating/${symbol}?apikey=${API_KEY}`;
   const response = await fetch(url);
   if (!response.ok) {
