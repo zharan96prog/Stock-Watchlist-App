@@ -12,7 +12,6 @@ export default function Forecast() {
       try {
         const forecast = await recommendationTrends(companySymbol);
         setForecastData(forecast);
-        console.log('Forecast data:', forecast);
       } catch (error) {
         console.error('Error fetching recommendation trends:', error);
       }
