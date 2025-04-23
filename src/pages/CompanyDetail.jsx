@@ -13,6 +13,7 @@ import Overview from '../components/Overview.jsx';
 import Profile from '../components/Profile.jsx';
 import News from '../components/News.jsx';
 import Forecast from '../components/Forecast.jsx';
+import Estimate from '../components/Estimate.jsx';
 
 export default function CompanyDetailPage() {
   const { companySymbol, tab = 'overview' } = useParams();
@@ -195,7 +196,7 @@ export default function CompanyDetailPage() {
 
           <div className="mt-4">
             {tab === 'overview' && <Overview companies={companyDetails} />}
-            {tab === 'estimate' && <p>Estimate content goes here...</p>}
+            {tab === 'estimate' && <Estimate />}
             {tab === 'forecast' && <Forecast />}
             {tab === 'financials' && <p>Financials content goes here...</p>}
             {tab === 'statistics' && <p>Statistics content goes here...</p>}
