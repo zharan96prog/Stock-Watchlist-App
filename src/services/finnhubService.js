@@ -16,6 +16,22 @@ export async function searchCompanyNews(query, fromDate, toDate) {
   }
 }
 
+export async function getPeers(query) {
+  const url = `https://finnhub.io/api/v1/stock/peers?symbol=${query}&token=${API_KEY}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch peers: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching peers:', error);
+    throw error;
+  }
+}
+
 export async function recommendationTrends(query) {
   const url = `https://finnhub.io/api/v1/stock/recommendation?symbol=${query}&token=${API_KEY}`;
 
