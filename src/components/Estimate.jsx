@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { getPeers } from '../services/finnhubService.js';
-import { getRating } from '../services/fmpService.js';
+import { fetchRating } from '../services/fmpService.js';
 
 export default function Estimate() {
   const { companySymbol } = useParams();
@@ -13,7 +13,7 @@ export default function Estimate() {
     const fetchPeers = async () => {
       try {
         const peers = await getPeers(companySymbol);
-        const rating = await getRating(companySymbol);
+        const rating = await fetchRating(companySymbol);
 
         // Видаляю перший елемент (companySymbol) з масиву peers
         const filteredPeers = peers.filter((peer) => peer !== companySymbol);
