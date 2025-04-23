@@ -13,6 +13,7 @@ import { authLoader } from './loaders/authLoader.js';
 import ErrorPage from './pages/Error.jsx';
 import { guestLoader } from './loaders/guestLoader.js';
 import CompanyDetailPage from './pages/CompanyDetail.jsx';
+import Financials from './components/Financials.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
       {
         path: 'watchlist/:companySymbol/:tab',
         element: <CompanyDetailPage />,
+        children: [{ path: 'financials/subTab', element: <Financials /> }],
       },
       {
         path: 'login',
