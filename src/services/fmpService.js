@@ -17,6 +17,17 @@ export async function searchCompanies(query) {
   }
 }
 
+export async function fetchRatios(symbol) {
+  const url = `${BASE_URL}/ratios/${symbol}?period=annual&apikey=${API_KEY}`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch ratios');
+  }
+  const data = await response.json();
+  return data;
+}
+
 export async function getRating(symbol) {
   const url = `${BASE_URL}/rating/${symbol}?apikey=${API_KEY}`;
   const response = await fetch(url);

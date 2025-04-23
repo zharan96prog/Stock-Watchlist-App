@@ -14,6 +14,7 @@ import Profile from '../components/Profile.jsx';
 import News from '../components/News.jsx';
 import Forecast from '../components/Forecast.jsx';
 import Estimate from '../components/Estimate.jsx';
+import Financials from '../components/Financials.jsx';
 
 export default function CompanyDetailPage() {
   const { companySymbol, tab = 'overview' } = useParams();
@@ -198,7 +199,7 @@ export default function CompanyDetailPage() {
             {tab === 'overview' && <Overview companies={companyDetails} />}
             {tab === 'estimate' && <Estimate />}
             {tab === 'forecast' && <Forecast />}
-            {tab === 'financials' && <p>Financials content goes here...</p>}
+            {tab === 'financials' && <Financials />}
             {tab === 'statistics' && <p>Statistics content goes here...</p>}
             {tab === 'news' && <News />}
             {tab === 'profile' && <Profile companies={companyDetails} />}
