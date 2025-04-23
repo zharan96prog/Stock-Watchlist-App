@@ -2,12 +2,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { fetchCompanyDetails } from '../services/fmpService.js';
+import {
+  fetchCompanyDetails,
+  fetchCompanyQuote,
+} from '../services/fmpService.js';
 import Button from '../components/UI/Button.jsx';
 import { addCompanyToWatchlist } from '../redux/slices/watchlistSlice.js';
 import NotificationBadge from '../components/UI/NotificationBadge.jsx';
 import Overview from '../components/Overview.jsx';
 import Profile from '../components/Profile.jsx';
+import News from '../components/News.jsx';
+import Forecast from '../components/Forecast.jsx';
 
 export default function CompanyDetailPage() {
   const { companySymbol, tab = 'overview' } = useParams();
@@ -25,10 +30,16 @@ export default function CompanyDetailPage() {
       return;
     }
 
-    const getCompanyDetails = async () => {
+    const fetchData = async () => {
       try {
-        const data = await fetchCompanyDetails(companySymbol);
-        setCompanyDetails(data);
+        setLoading(true);
+
+        const [details, quote] = await Promise.all([
+          fetchCompanyDetails(companySymbol),
+          fetchCompanyQuote(companySymbol),
+        ]);
+
+        setCompanyDetails({ ...details, ...quote });
       } catch (err) {
         setError(err.message);
       } finally {
@@ -36,7 +47,7 @@ export default function CompanyDetailPage() {
       }
     };
 
-    getCompanyDetails();
+    fetchData();
   }, [companySymbol, navigate]);
 
   const handleAddToWatchlist = () => {
@@ -149,7 +160,8 @@ export default function CompanyDetailPage() {
                   : 'text-gray-500'
               }`}
             >
-              {companyDetails.changes.toFixed(2)}
+              {companyDetails.changes.toFixed(2)} (
+              {companyDetails.changesPercentage.toFixed(2)}%)
             </span>
           </div>
         </div>
@@ -184,10 +196,10 @@ export default function CompanyDetailPage() {
           <div className="mt-4">
             {tab === 'overview' && <Overview companies={companyDetails} />}
             {tab === 'estimate' && <p>Estimate content goes here...</p>}
-            {tab === 'forecast' && <p>Forecast content goes here...</p>}
+            {tab === 'forecast' && <Forecast />}
             {tab === 'financials' && <p>Financials content goes here...</p>}
             {tab === 'statistics' && <p>Statistics content goes here...</p>}
-            {tab === 'news' && <p>News content goes here...</p>}
+            {tab === 'news' && <News />}
             {tab === 'profile' && <Profile companies={companyDetails} />}
           </div>
         </div>

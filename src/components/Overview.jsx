@@ -17,15 +17,48 @@ export default function Overview({ companies }) {
           52-Week Range {companies.range}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Beta {companies.beta}
+          Beta {companies.beta.toFixed(2)}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
           Dividend ${companies.lastDiv}{' '}
         </div>
-        <div className="bg-primary-dark/10 p-4 rounded-lg">05</div>
-        <div className="bg-primary-dark/10 p-4 rounded-lg">06</div>
-        <div className="bg-primary-dark/10 p-4 rounded-lg">07</div>
-        <div className="bg-primary-dark/10 p-4 rounded-lg">08</div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          Open {companies.open}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          Previous Close {companies.previousClose}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          Volume {companies.volume.toLocaleString()}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          EPS (ttm) {companies.eps.toFixed(2)}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          PE Ratio {companies.pe.toFixed(2)}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          Shares Out {companies.sharesOutstanding.toLocaleString()}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          Day Low {companies.dayLow.toFixed(2)}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          Day High {companies.dayHigh.toFixed(2)}
+        </div>
+        <div className="bg-primary-dark/10 p-4 rounded-lg">
+          <p>Earnings Date Announcement</p>
+          <p>
+            {new Date(companies.earningsAnnouncement).toLocaleDateString(
+              'en-US',
+              {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              }
+            )}
+          </p>
+        </div>
       </div>
 
       <div className="bg-primary-dark/10 p-4 rounded-lg">
