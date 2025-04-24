@@ -37,7 +37,6 @@ const router = createBrowserRouter([
       {
         path: 'watchlist/:companySymbol/:tab',
         element: <CompanyDetailPage />,
-        children: [{ path: 'financials/subTab', element: <Financials /> }],
       },
       {
         path: 'login',
