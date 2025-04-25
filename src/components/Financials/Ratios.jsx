@@ -48,15 +48,20 @@ export default function Ratios({ ratios, keyMetrics }) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8">
-      <h1 className="text-4xl font-bold text-primary mb-6">Financial Ratios</h1>
+    <div className="flex flex-col items-center justify-center">
+      <div className="mb-4 w-full">
+        <h2 className="text-2xl font-bold text-primary text-left">
+          Ratios and Metrics
+        </h2>
+        <p className="text-sm text-primary-foreground/80 text-left">
+          Market cap in millions USD. Fiscal year is January - December.
+        </p>
+      </div>
       <div className="overflow-x-auto w-full">
         <table className="table-auto border-collapse border border-gray-300 w-full mb-8">
           <thead>
             <tr>
-              <th className="border border-gray-300 px-4 py-2 text-left">
-                Metric
-              </th>
+              <th className="border border-gray-300 px-4 py-2">Fiscal Year</th>
               {years.map((year, index) => (
                 <th
                   key={index}

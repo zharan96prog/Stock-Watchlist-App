@@ -28,16 +28,21 @@ export default function Income({ incomeStatement }) {
 
   return (
     <div className="overflow-x-auto w-full">
-      <div className="flex flex-col items-center justify-center p-8">
-        <h1 className="text-4xl font-bold text-primary mb-6">
-          Income Statement
-        </h1>
+      <div className="flex flex-col items-center justify-center">
+        <div className="mb-4 w-full">
+          <h2 className="text-2xl font-bold text-primary text-left">
+            Income Statement
+          </h2>
+          <p className="text-sm text-primary-foreground/80 text-left">
+            Financials in millions USD. Fiscal year is January - December.
+          </p>
+        </div>
         <div className="overflow-x-auto w-full mb-8">
           <table className="table-auto border-collapse border border-gray-300 w-full">
             <thead>
               <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Metric
+                <th className="border border-gray-300 px-4 py-2">
+                  Fiscal Year
                 </th>
                 {years.map((year, index) => (
                   <th
@@ -52,7 +57,6 @@ export default function Income({ incomeStatement }) {
             <tbody>
               {selectedKeys.map((key) => (
                 <React.Fragment key={key}>
-                  {/* Основний рядок */}
                   <tr>
                     <td className="border border-gray-300 px-4 py-2 font-semibold">
                       {displayIncomeKeys[key]}

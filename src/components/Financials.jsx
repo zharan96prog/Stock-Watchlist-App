@@ -88,7 +88,7 @@ export default function Financials() {
           </nav>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center p-8">
+      <div className="flex flex-col items-center justify-center p-2">
         <div className="overflow-x-auto w-full">
           <div className="mt-4">
             {subTab === 'income' && incomeStatement && (
