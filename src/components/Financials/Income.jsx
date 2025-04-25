@@ -67,7 +67,6 @@ export default function Income({ incomeStatement }) {
                     ))}
                   </tr>
 
-                  {/* Рядок для Revenue Growth */}
                   {key === 'revenue' && (
                     <GrowthRow
                       label="Revenue Growth (YoY)"
@@ -76,7 +75,6 @@ export default function Income({ incomeStatement }) {
                     />
                   )}
 
-                  {/* Рядок для EPS Growth */}
                   {key === 'eps' && (
                     <GrowthRow
                       label="EPS Growth (YoY)"
