@@ -31,7 +31,7 @@ export default function Income({ incomeStatement }) {
       <div className="flex flex-col items-center justify-center">
         <div className="mb-4 w-full">
           <h2 className="text-2xl font-bold text-primary text-left">
-            Income Statement
+            {incomeStatement[0].symbol} Income Statement
           </h2>
           <p className="text-sm text-primary-foreground/80 text-left">
             Financials in millions USD. Fiscal year is January - December.

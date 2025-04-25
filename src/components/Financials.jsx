@@ -70,8 +70,8 @@ export default function Financials() {
   return (
     <>
       <div>
-        <div className="border-b border-border mb-4">
-          <nav className="flex justify-start text-sm font-medium text-primary-foreground">
+        <div className="border-b border-border mb-4 w-max">
+          <nav className="flex justify-start text-base text-primary-foreground">
             {validSubTabs.map((subTabName) => (
               <span
                 key={subTabName}
@@ -90,20 +90,18 @@ export default function Financials() {
       </div>
       <div className="flex flex-col items-center justify-center p-2">
         <div className="overflow-x-auto w-full">
-          <div className="mt-4">
-            {subTab === 'income' && incomeStatement && (
-              <Income incomeStatement={incomeStatement} />
-            )}
-            {subTab === 'balance-sheet' && balanceSheet && (
-              <BalanceSheet balanceSheet={balanceSheet} />
-            )}
-            {subTab === 'cash-flow' && cashFlow && (
-              <CashFlow cashFlow={cashFlow} />
-            )}
-            {subTab === 'ratios' && ratios && (
-              <Ratios ratios={ratios} keyMetrics={keyMetrics} />
-            )}
-          </div>
+          {subTab === 'income' && incomeStatement && (
+            <Income incomeStatement={incomeStatement} />
+          )}
+          {subTab === 'balance-sheet' && balanceSheet && (
+            <BalanceSheet balanceSheet={balanceSheet} />
+          )}
+          {subTab === 'cash-flow' && cashFlow && (
+            <CashFlow cashFlow={cashFlow} />
+          )}
+          {subTab === 'ratios' && ratios && (
+            <Ratios ratios={ratios} keyMetrics={keyMetrics} />
+          )}
         </div>
       </div>
     </>

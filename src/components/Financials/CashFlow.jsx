@@ -33,7 +33,7 @@ export default function CashFlow({ cashFlow }) {
     <div className="flex flex-col items-center justify-center">
       <div className="mb-4 w-full">
         <h2 className="text-2xl font-bold text-primary text-left">
-          Cash Flow Statement
+          {cashFlow[0].symbol} Cash Flow Statement
         </h2>
         <p className="text-sm text-primary-foreground/80 text-left">
           Financials in millions USD. Fiscal year is January - December.

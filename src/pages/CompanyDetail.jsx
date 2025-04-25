@@ -170,13 +170,12 @@ export default function CompanyDetailPage() {
 
         <div className="content">
           <div className="border-b border-border mb-4">
-            <nav className="flex justify-between text-sm font-medium text-primary-foreground">
+            <nav className="flex justify-between text-lg font-bold text-primary-foreground">
               {[
                 'overview',
                 'estimate',
                 'forecast',
                 'financials',
-                'statistics',
                 'news',
                 'profile',
               ].map((tabName) => (
@@ -200,7 +199,6 @@ export default function CompanyDetailPage() {
             {tab === 'estimate' && <Estimate />}
             {tab === 'forecast' && <Forecast />}
             {tab === 'financials' && <Financials />}
-            {tab === 'statistics' && <p>Statistics content goes here...</p>}
             {tab === 'news' && <News />}
             {tab === 'profile' && <Profile companies={companyDetails} />}
           </div>

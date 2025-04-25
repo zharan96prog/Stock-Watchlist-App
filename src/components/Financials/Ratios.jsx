@@ -51,7 +51,7 @@ export default function Ratios({ ratios, keyMetrics }) {
     <div className="flex flex-col items-center justify-center">
       <div className="mb-4 w-full">
         <h2 className="text-2xl font-bold text-primary text-left">
-          Ratios and Metrics
+          {ratios[0].symbol} Ratios and Metrics
         </h2>
         <p className="text-sm text-primary-foreground/80 text-left">
           Market cap in millions USD. Fiscal year is January - December.
