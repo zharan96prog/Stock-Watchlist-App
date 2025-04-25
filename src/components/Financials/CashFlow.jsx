@@ -1,12 +1,75 @@
-export default function CashFlow() {
+import displayCashFlowKeys from '../../constants/displayCashFlowKeys';
+
+export default function CashFlow({ cashFlow }) {
+  if (!cashFlow || !Array.isArray(cashFlow) || cashFlow.length === 0) {
+    return <p>Loading Cash Flow Statement...</p>;
+  }
+
+  const years = cashFlow.map((cashFl) => cashFl.calendarYear);
+
+  const selectedKeys = Object.keys(displayCashFlowKeys);
+
+  const formatValue = (num, key) => {
+    if (key === 'date') {
+      const date = new Date(num);
+      if (isNaN(date)) return 'N/A';
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+      });
+    }
+    if (typeof num !== 'number') return 'N/A';
+    if (num < 1) {
+      return num.toFixed(2);
+    }
+    if (num < 100) {
+      return num.toFixed(2);
+    }
+    return (num / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center p-8">
       <h1 className="text-4xl font-bold text-primary mb-6">
         Cash Flow Statement
       </h1>
-      <p className="mt-4 text-lg text-gray-500">
-        Loading cash flow statement data...
-      </p>
+      <div className="overflow-x-auto w-full">
+        <table className="table-auto border-collapse border border-gray-300 w-full mb-8">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Fiscal Year
+              </th>
+              {years.map((year, index) => (
+                <th
+                  key={index}
+                  className="border border-gray-300 px-4 py-2 text-center"
+                >
+                  {year}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {selectedKeys.map((key) => (
+              <tr key={key}>
+                <td className="border border-gray-300 px-4 py-2 font-semibold">
+                  {displayCashFlowKeys[key]}
+                </td>
+                {cashFlow.map((statement, index) => (
+                  <td
+                    key={index}
+                    className="border border-gray-300 px-4 py-2 text-center"
+                  >
+                    {formatValue(statement[key], key)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
