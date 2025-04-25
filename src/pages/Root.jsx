@@ -11,10 +11,7 @@ export default function RootLayout() {
   const isAuthChecking = useSelector((state) => state.auth.isAuthChecking);
 
   useEffect(() => {
-    console.log('Checking user...');
-    dispatch(checkUser()).then(() => {
-      console.log('User check completed');
-    });
+    dispatch(checkUser()).then(() => {});
   }, [dispatch]);
 
   return (

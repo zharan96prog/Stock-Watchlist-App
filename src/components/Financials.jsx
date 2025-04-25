@@ -61,7 +61,6 @@ export default function Financials() {
   ) {
     return (
       <div className="flex flex-col items-center justify-center p-8">
-        <h1 className="text-4xl font-bold text-primary mb-6">Financials</h1>
         <p className="mt-4 text-lg text-gray-500">Loading financial data...</p>
       </div>
     );
