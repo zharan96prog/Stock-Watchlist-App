@@ -170,7 +170,7 @@ export default function CompanyDetailPage() {
 
         <div className="content">
           <div className="border-b border-border mb-4">
-            <nav className="flex justify-between text-lg font-bold text-primary-foreground">
+            <nav className="flex justify-around text-lg font-bold text-primary-foreground">
               {[
                 'overview',
                 'estimate',
