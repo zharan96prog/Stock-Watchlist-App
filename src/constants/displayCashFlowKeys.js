@@ -1,5 +1,8 @@
 const displayCashFlowKeys = {
   date: 'Period Ending',
+  netIncome: 'Net Income',
+  operatingCashFlow: 'Operating Cash Flow',
+  freeCashFlow: 'Free Cash Flow',
 };
 
 export default displayCashFlowKeys;
@@ -24,7 +27,6 @@ export default displayCashFlowKeys;
 // effectOfForexChangesOnCash: -106000000;
 // fillingDate: '2025-02-14';
 // finalLink: 'https://www.sec.gov/Archives/edgar/data/18230/000001823025000008/cat-20241231.htm';
-// freeCashFlow: 8820000000;
 // inventory: -414000000;
 // investmentsInPropertyPlantAndEquipment: -1227000000;
 // link: 'https://www.sec.gov/Archives/edgar/data/18230/000001823025000008/0000018230-25-000008-index.htm';
@@ -32,8 +34,6 @@ export default displayCashFlowKeys;
 // netCashUsedForInvestingActivites: -2453000000;
 // netCashUsedProvidedByFinancingActivities: -9565000000;
 // netChangeInCash: -89000000;
-// netIncome: 10788000000;
-// operatingCashFlow: 12035000000;
 // otherFinancingActivites: -41000000;
 // otherInvestingActivites: -2730000000;
 // otherNonCashItems: -285000000;

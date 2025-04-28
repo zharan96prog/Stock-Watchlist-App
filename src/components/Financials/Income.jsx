@@ -15,13 +15,16 @@ export default function Income({ incomeStatement }) {
 
   const selectedKeys = Object.keys(displayIncomeKeys);
 
-  const formatValue = (num) => {
+  const formatValue = (val, num) => {
     if (typeof num !== 'number') return 'N/A';
     if (num < 1) {
       return num.toFixed(2);
     }
     if (num < 100) {
       return num.toFixed(2);
+    }
+    if (val === 'eps' || val === 'epsdiluted') {
+      return num;
     }
     return (num / 1000).toLocaleString('en-US', { maximumFractionDigits: 0 });
   };
@@ -66,7 +69,7 @@ export default function Income({ incomeStatement }) {
                         key={index}
                         className="border border-gray-300 px-4 py-2 text-center"
                       >
-                        {formatValue(statement[key])}
+                        {formatValue(key, statement[key])}
                       </td>
                     ))}
                   </tr>

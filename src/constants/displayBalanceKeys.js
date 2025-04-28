@@ -1,5 +1,7 @@
 const displayBalanceKeys = {
   date: 'Period Ending',
+  totalAssets: 'Total Assets',
+  totalLiabilities: 'Total Liabilities',
 };
 
 export default displayBalanceKeys;
@@ -27,7 +29,6 @@ export default displayBalanceKeys;
 // longTermDebt: 27351000000;
 // longTermInvestments: 0;
 // minorityInterest: 3000000;
-// netDebt: 31520000000;
 // netReceivables: 18847000000;
 // otherAssets: 0;
 // otherCurrentAssets: 3119000000;
@@ -46,7 +47,6 @@ export default displayBalanceKeys;
 // symbol: 'CAT';
 // taxAssets: 3312000000;
 // taxPayables: 0;
-// totalAssets: 87764000000;
 // totalCurrentAssets: 45682000000;
 // totalCurrentLiabilities: 32272000000;
 // totalDebt: 38409000000;

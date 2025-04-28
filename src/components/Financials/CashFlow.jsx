@@ -1,4 +1,7 @@
-import displayCashFlowKeys from '../../constants/displayCashFlowKeys';
+import React from 'react';
+
+import displayCashFlowKeys from '../../constants/displayCashFlowKeys.js';
+import GrowthRow from './GrowthRow.jsx';
 
 export default function CashFlow({ cashFlow }) {
   if (!cashFlow || !Array.isArray(cashFlow) || cashFlow.length === 0) {
@@ -56,19 +59,35 @@ export default function CashFlow({ cashFlow }) {
           </thead>
           <tbody>
             {selectedKeys.map((key) => (
-              <tr key={key}>
-                <td className="border border-gray-300 px-4 py-2 font-semibold">
-                  {displayCashFlowKeys[key]}
-                </td>
-                {cashFlow.map((statement, index) => (
-                  <td
-                    key={index}
-                    className="border border-gray-300 px-4 py-2 text-center"
-                  >
-                    {formatValue(statement[key], key)}
+              <React.Fragment key={key}>
+                <tr key={key}>
+                  <td className="border border-gray-300 px-4 py-2 font-semibold">
+                    {displayCashFlowKeys[key]}
                   </td>
-                ))}
-              </tr>
+                  {cashFlow.map((statement, index) => (
+                    <td
+                      key={index}
+                      className="border border-gray-300 px-4 py-2 text-center"
+                    >
+                      {formatValue(statement[key], key)}
+                    </td>
+                  ))}
+                </tr>
+                {key === 'operatingCashFlow' && (
+                  <GrowthRow
+                    label="Operating Cash Flow Growth"
+                    data={cashFlow}
+                    keyName={key}
+                  />
+                )}
+                {key === 'freeCashFlow' && (
+                  <GrowthRow
+                    label="Free Cash Flow Growth"
+                    data={cashFlow}
+                    keyName={key}
+                  />
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
