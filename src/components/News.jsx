@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { searchCompanyNews } from '../services/finnhubService.js';
+import Spinner from './UI/Spinner.jsx';
 
 export default function News() {
   const { companySymbol } = useParams();
@@ -108,7 +110,7 @@ export default function News() {
           ))}
         </div>
       ) : (
-        <p>Loading news data...</p>
+        <Spinner />
       )}
     </>
   );

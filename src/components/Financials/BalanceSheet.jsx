@@ -1,12 +1,14 @@
 import displayBalanceKeys from '../../constants/displayBalanceKeys';
 
+import Spinner from '../UI/Spinner.jsx';
+
 export default function BalanceSheet({ balanceSheet }) {
   if (
     !balanceSheet ||
     !Array.isArray(balanceSheet) ||
     balanceSheet.length === 0
   ) {
-    return <p>Loading Balance Sheet...</p>;
+    return <Spinner />;
   }
 
   const years = balanceSheet.map((sheet) => sheet.calendarYear);

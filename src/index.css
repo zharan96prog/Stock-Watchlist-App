@@ -59,6 +59,13 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Зміна стилів тексту в ApexCharts */
+.apexcharts-legend-text {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

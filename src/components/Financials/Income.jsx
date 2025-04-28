@@ -1,6 +1,8 @@
 import React from 'react';
+
 import displayIncomeKeys from '../../constants/displayIncomeKeys.js';
 import GrowthRow from './GrowthRow';
+import Spinner from '../UI/Spinner.jsx';
 
 export default function Income({ incomeStatement }) {
   if (
@@ -8,7 +10,7 @@ export default function Income({ incomeStatement }) {
     !Array.isArray(incomeStatement) ||
     incomeStatement.length === 0
   ) {
-    return <p>Loading Income Statement...</p>;
+    return <Spinner />;
   }
 
   const years = incomeStatement.map((sheet) => sheet.date.split('-')[0]);

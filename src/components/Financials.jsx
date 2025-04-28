@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import Spinner from './UI/Spinner.jsx';
+
 import {
   fetchRatios,
   fetchKeyMetrics,
@@ -59,11 +61,7 @@ export default function Financials() {
     !balanceSheet ||
     !incomeStatement
   ) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8">
-        <p className="mt-4 text-lg text-gray-500">Loading financial data...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (

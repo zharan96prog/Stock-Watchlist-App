@@ -2,6 +2,7 @@ import React from 'react';
 
 import displayRatioKeys from '../../constants/displayRatioKeys';
 import GrowthRow from './GrowthRow.jsx';
+import Spinner from '../UI/Spinner.jsx';
 
 export default function Ratios({ ratios, keyMetrics }) {
   if (
@@ -12,7 +13,7 @@ export default function Ratios({ ratios, keyMetrics }) {
     !Array.isArray(keyMetrics) ||
     keyMetrics.length === 0
   ) {
-    return <p>Loading Financial Ratios...</p>;
+    return <Spinner />;
   }
 
   const combinedData = ratios.map((ratio, index) => ({

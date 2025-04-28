@@ -2,10 +2,11 @@ import React from 'react';
 
 import displayCashFlowKeys from '../../constants/displayCashFlowKeys.js';
 import GrowthRow from './GrowthRow.jsx';
+import Spinner from '../UI/Spinner.jsx';
 
 export default function CashFlow({ cashFlow }) {
   if (!cashFlow || !Array.isArray(cashFlow) || cashFlow.length === 0) {
-    return <p>Loading Cash Flow Statement...</p>;
+    return <Spinner />;
   }
 
   const years = cashFlow.map((cashFl) => cashFl.calendarYear);

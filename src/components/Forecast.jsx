@@ -1,7 +1,14 @@
+import Chart from 'react-apexcharts';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { recommendationTrends } from '../services/finnhubService.js';
+import Spinner from './UI/Spinner.jsx';
+import {
+  createSeries,
+  calculateConsensus,
+  getChartOptions,
+} from '../utils/forecastUtils.js';
 
 export default function Forecast() {
   const { companySymbol } = useParams();
@@ -20,45 +27,23 @@ export default function Forecast() {
     fetchForecast();
   }, [companySymbol]);
 
+  const series = createSeries(forecastData);
+  const consensus = calculateConsensus(forecastData);
+  const options = getChartOptions(forecastData);
+
   return (
-    <div>
-      <h1>Forecast for {companySymbol}</h1>
-      <div>
+    <div className="flex flex-col items-center justify-center">
+      <h1 className="text-2xl font-bold mb-4">Forecast for {companySymbol}</h1>
+      <div className="w-10/12">
         {forecastData.length > 0 ? (
-          <table className="table-auto border-collapse border border-gray-300 w-full">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 px-4 py-2">Period</th>
-                <th className="border border-gray-300 px-4 py-2">Buy</th>
-                <th className="border border-gray-300 px-4 py-2">Hold</th>
-                <th className="border border-gray-300 px-4 py-2">Sell</th>
-                <th className="border border-gray-300 px-4 py-2">Strong Buy</th>
-              </tr>
-            </thead>
-            <tbody>
-              {forecastData.map((item, index) => (
-                <tr key={index}>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.period}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.buy}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.hold}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.sell}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.strongBuy}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <>
+            <Chart options={options} series={series} type="bar" height={400} />
+            <h2 className="text-xl font-bold">
+              Analyst Consensus: {consensus}
+            </h2>
+          </>
         ) : (
-          <p>Loading forecast data...</p>
+          <Spinner />
         )}
       </div>
     </div>

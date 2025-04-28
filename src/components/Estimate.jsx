@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { getPeers } from '../services/finnhubService.js';
 import { fetchRating } from '../services/fmpService.js';
+import Spinner from './UI/Spinner.jsx';
 
 export default function Estimate() {
   const { companySymbol } = useParams();
@@ -15,7 +16,6 @@ export default function Estimate() {
         const peers = await getPeers(companySymbol);
         const rating = await fetchRating(companySymbol);
 
-        // Видаляю перший елемент (companySymbol) з масиву peers
         const filteredPeers = peers.filter((peer) => peer !== companySymbol);
 
         setPeers(filteredPeers);
@@ -81,7 +81,7 @@ export default function Estimate() {
               </p>
             </div>
           ) : (
-            <p>Loading rating data...</p>
+            <Spinner />
           )}
         </div>
       </div>
