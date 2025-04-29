@@ -28,22 +28,62 @@ export default function Financials() {
   const validSubTabs = ['income', 'balance-sheet', 'cash-flow', 'ratios'];
 
   useEffect(() => {
+    // This logic is implemented to reduce the response time from the API,
+    // as the data changes very rarely.
+    // Additionally, it helps to stay within the API request limit
+    // by caching the data locally.
     const fetchData = async () => {
       try {
-        const data = await fetchRatios(companySymbol);
-        const metrics = await fetchKeyMetrics(companySymbol);
-        const cashFlowData = await fetchCashFlowStatement(companySymbol);
-        const balanceSheetData = await fetchBalanceSheetStatement(
-          companySymbol
-        );
-        const incomeStatementData = await fetchIncomeStatement(companySymbol);
-        setIncomeStatement(incomeStatementData);
-        setRatios(data);
-        setKeyMetrics(metrics);
-        setCashFlow(cashFlowData);
-        setBalanceSheet(balanceSheetData);
+        const storedData = JSON.parse(localStorage.getItem('companies')) || {};
+        const companyData = storedData[companySymbol]?.financials || {};
+        const lastFetchedDate = companyData?.lastFetchedDate;
+        const today = new Date().toISOString().split('T')[0];
+
+        if (companyData && lastFetchedDate === today) {
+          setRatios(companyData.ratios);
+          setKeyMetrics(companyData.keyMetrics);
+          setCashFlow(companyData.cashFlow);
+          setBalanceSheet(companyData.balanceSheet);
+          setIncomeStatement(companyData.incomeStatement);
+        } else {
+          const [
+            data,
+            metrics,
+            cashFlowData,
+            balanceSheetData,
+            incomeStatementData,
+          ] = await Promise.all([
+            fetchRatios(companySymbol),
+            fetchKeyMetrics(companySymbol),
+            fetchCashFlowStatement(companySymbol),
+            fetchBalanceSheetStatement(companySymbol),
+            fetchIncomeStatement(companySymbol),
+          ]);
+
+          const updatedData = {
+            ...storedData,
+            [companySymbol]: {
+              ...storedData[companySymbol],
+              financials: {
+                lastFetchedDate: today,
+                ratios: data,
+                keyMetrics: metrics,
+                cashFlow: cashFlowData,
+                balanceSheet: balanceSheetData,
+                incomeStatement: incomeStatementData,
+              },
+            },
+          };
+          localStorage.setItem('companies', JSON.stringify(updatedData));
+
+          setRatios(data);
+          setKeyMetrics(metrics);
+          setCashFlow(cashFlowData);
+          setBalanceSheet(balanceSheetData);
+          setIncomeStatement(incomeStatementData);
+        }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching financial data:', error);
       }
     };
 
