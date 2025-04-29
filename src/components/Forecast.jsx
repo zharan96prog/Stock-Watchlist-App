@@ -1,50 +1,63 @@
-import Chart from 'react-apexcharts';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { openDB } from 'idb';
 
-import { recommendationTrends } from '../services/finnhubService.js';
+import Chart from 'react-apexcharts';
 import Spinner from './UI/Spinner.jsx';
+import { recommendationTrends } from '../services/finnhubService.js';
 import {
   createSeries,
   calculateConsensus,
   getChartOptions,
 } from '../utils/forecastUtils.js';
 
+const dbPromise = openDB('forecast-db', 1, {
+  upgrade(db) {
+    db.createObjectStore('forecasts', { keyPath: 'symbol' });
+  },
+});
+
 export default function Forecast() {
   const { companySymbol } = useParams();
   const [forecastData, setForecastData] = useState([]);
 
+  // This logic is implemented to reduce the response time from the API,
+  // as the data changes very rarely.
+  // Additionally, it helps to stay within the API request limit
+  // by caching the data locally.
+  // The data is stored in IndexedDB and localStorage.
   useEffect(() => {
-    // This logic is implemented to reduce the response time from the API,
-    // as the data changes very rarely.
-    // Additionally, it helps to stay within the API request limit
-    // by caching the data locally.
     const fetchForecast = async () => {
       try {
+        const db = await dbPromise;
         const storedData = JSON.parse(localStorage.getItem('companies')) || {};
-        const companyData = storedData[companySymbol]?.forecast || {};
-        const lastFetchedDate = companyData?.lastFetchedDate;
+        const lastFetchedDate = storedData[companySymbol]?.lastFetchedDate;
         const today = new Date().toISOString().split('T')[0];
 
-        if (companyData.data && lastFetchedDate === today) {
-          setForecastData(companyData.data);
-        } else {
-          const forecast = await recommendationTrends(companySymbol);
-
-          const updatedData = {
-            ...storedData,
-            [companySymbol]: {
-              ...storedData[companySymbol],
-              forecast: {
-                lastFetchedDate: today,
-                data: forecast,
-              },
-            },
-          };
-          localStorage.setItem('companies', JSON.stringify(updatedData));
-
-          setForecastData(forecast);
+        if (lastFetchedDate === today) {
+          const companyData = await db.get('forecasts', companySymbol);
+          if (companyData) {
+            setForecastData(companyData.data);
+            return;
+          }
         }
+
+        const forecast = await recommendationTrends(companySymbol);
+
+        await db.put('forecasts', {
+          symbol: companySymbol,
+          data: forecast,
+        });
+
+        localStorage.setItem(
+          'companies',
+          JSON.stringify({
+            ...storedData,
+            [companySymbol]: { lastFetchedDate: today },
+          })
+        );
+
+        setForecastData(forecast);
       } catch (error) {
         console.error('Error fetching recommendation trends:', error);
         setForecastData([]);
