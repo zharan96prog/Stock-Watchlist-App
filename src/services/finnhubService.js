@@ -1,5 +1,22 @@
 const API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
 
+export async function fetchCompanyBasicFinancials(symbol) {
+  const url = `https://finnhub.io/api/v1/stock/metric?symbol=${symbol}&metric=all&token=${API_KEY}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch company basic financials: ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching company basic financials:', error);
+    throw error;
+  }
+}
+
 export async function searchCompanyNews(query, fromDate, toDate) {
   const url = `https://finnhub.io/api/v1/company-news?symbol=${query}&from=${fromDate}&to=${toDate}&token=${API_KEY}`;
 
