@@ -23,16 +23,14 @@ export default function MetricComparison({
       : sortedValues[mid];
   };
 
-  // Витягуємо значення метрики для обчислення медіани
   const metricValues = data.map((entry) => entry[metricKey]);
   const median = calculateMedian(metricValues);
 
-  // Знаходимо значення метрики для компанії
   const companyEntry = data.find((entry) => entry.symbol === companySymbol);
   const companyValue = companyEntry ? companyEntry[metricKey] : 'N/A';
 
   const max = Math.max(...metricValues, median);
-  const goodThreshold = 0.2; // Поріг для хороших значень
+  const goodThreshold = 0.2;
   const angle = 180;
 
   const normalizeValue = (value) => {
