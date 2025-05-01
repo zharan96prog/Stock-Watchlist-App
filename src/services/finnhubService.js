@@ -1,5 +1,26 @@
 const API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
 
+export async function fetchCompanyNameBySymbol(symbol) {
+  const url = `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${API_KEY}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch company name by symbol: ${response.statusText}`
+      );
+    }
+    const data = await response.json();
+
+    return {
+      symbol: data.ticker,
+      name: data.name,
+    };
+  } catch (error) {
+    console.error('Error fetching company name by symbol:', error);
+    throw error;
+  }
+}
+
 export async function fetchCompanyBasicFinancials(symbol) {
   const url = `https://finnhub.io/api/v1/stock/metric?symbol=${symbol}&metric=all&token=${API_KEY}`;
   try {

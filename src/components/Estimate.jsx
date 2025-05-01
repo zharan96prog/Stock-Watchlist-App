@@ -6,6 +6,7 @@ import { fetchRating } from '../services/fmpService.js';
 import Spinner from './UI/Spinner.jsx';
 import { usePeersFinancials } from '../hooks/usePeersFinancials.js';
 import MetricComparison from './Estimate/MetricComparison.jsx';
+import MetricSummary from './Estimate/MetricSummary.jsx';
 
 export default function Estimate() {
   const { companySymbol } = useParams();
@@ -55,9 +56,30 @@ export default function Estimate() {
     }))
     .filter((entry) => entry.roic !== null);
 
+  const peData = Object.entries(financials)
+    .map(([symbol, data]) => ({
+      symbol,
+      pe: data.pe !== undefined && data.pe !== 'N/A' ? data.pe : null,
+    }))
+    .filter((entry) => entry.pe !== null);
+
+  const psData = Object.entries(financials)
+    .map(([symbol, data]) => ({
+      symbol,
+      ps: data.ps !== undefined && data.ps !== 'N/A' ? data.ps : null,
+    }))
+    .filter((entry) => entry.ps !== null);
+
+  const pbData = Object.entries(financials)
+    .map(([symbol, data]) => ({
+      symbol,
+      pb: data.pb !== undefined && data.pb !== 'N/A' ? data.pb : null,
+    }))
+    .filter((entry) => entry.pb !== null);
+
   return (
     <div>
-      <div className="flex flex-row">
+      <div className="flex flex-row justify-center">
         <div className="w-max">
           {financialsLoading ? (
             <Spinner />
@@ -86,7 +108,29 @@ export default function Estimate() {
             </div>
           )}
         </div>
-        <div className="w-max left-0 ml-10">
+      </div>
+      <div className="flex flex-col justify-center items-center">
+        <MetricSummary
+          title="Price to Earnings Ratio vs Peers"
+          companySymbol={companySymbol}
+          metricKey="pe"
+          data={peData}
+        />
+        <MetricSummary
+          title="Price to Sales Ratio vs Peers"
+          companySymbol={companySymbol}
+          metricKey="ps"
+          data={psData}
+        />
+        <MetricSummary
+          title="Price to Book Ratio vs Peers"
+          companySymbol={companySymbol}
+          metricKey="pb"
+          data={pbData}
+        />
+      </div>
+      <div className="flex flex-row justify-center mt-10">
+        <div className="w-max">
           {rating && rating.length > 0 && (
             <div>
               <h2 className="text-lg font-semibold">
