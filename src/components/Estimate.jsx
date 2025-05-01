@@ -58,67 +58,13 @@ export default function Estimate() {
   return (
     <div>
       <div className="flex flex-row">
-        {rating && rating.length > 0 && (
-          <div className="mb-4 w-1/3">
-            <h2 className="text-lg font-semibold">
-              Rating for {companySymbol}
-            </h2>
-            <p>
-              <strong>Rating:</strong> {rating[0].rating} (
-              {rating[0].ratingRecommendation})
-            </p>
-            <p>
-              <strong>Score:</strong> {rating[0].ratingScore}
-            </p>
-            <ul className="ml-6">
-              <li>
-                <strong>DCF:</strong> {rating[0].ratingDetailsDCFRecommendation}{' '}
-                (Score: {rating[0].ratingDetailsDCFScore})
-              </li>
-              <li>
-                <strong>DE:</strong> {rating[0].ratingDetailsDERecommendation}{' '}
-                (Score: {rating[0].ratingDetailsDEScore})
-              </li>
-              <li>
-                <strong>PB:</strong> {rating[0].ratingDetailsPBRecommendation}{' '}
-                (Score: {rating[0].ratingDetailsPBScore})
-              </li>
-              <li>
-                <strong>PE:</strong> {rating[0].ratingDetailsPERecommendation}{' '}
-                (Score: {rating[0].ratingDetailsPEScore})
-              </li>
-              <li>
-                <strong>ROA:</strong> {rating[0].ratingDetailsROARecommendation}{' '}
-                (Score: {rating[0].ratingDetailsROAScore})
-              </li>
-              <li>
-                <strong>ROE:</strong> {rating[0].ratingDetailsROERecommendation}{' '}
-                (Score: {rating[0].ratingDetailsROEScore})
-              </li>
-            </ul>
-          </div>
-        )}
-        <div className="w-1/3 left-0">
-          <p className="underline">Peers data for {companySymbol}</p>
-          {peers.map((peer, index) => (
-            <div key={`${peer}-${index}`}>{peer}</div>
-          ))}
-          <a
-            href="https://finnhub.io/docs/api/company-peers"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 underline"
-          >
-            View Peers on Finnhub
-          </a>
-        </div>
-        <div className="w-1/2 left-0 ml-10">
+        <div className="w-max">
           {financialsLoading ? (
             <Spinner />
           ) : financialsError ? (
             <p>Error loading financials</p>
           ) : (
-            <>
+            <div className="flex flex-row">
               <MetricComparison
                 title="Return on Equity (ROE)"
                 data={roeData}
@@ -137,8 +83,67 @@ export default function Estimate() {
                 companySymbol={companySymbol}
                 metricKey="roic"
               ></MetricComparison>
-            </>
+            </div>
           )}
+        </div>
+        <div className="w-max left-0 ml-10">
+          {rating && rating.length > 0 && (
+            <div>
+              <h2 className="text-lg font-semibold">
+                Rating for {companySymbol}
+              </h2>
+              <p>
+                <strong>Rating:</strong> {rating[0].rating} (
+                {rating[0].ratingRecommendation})
+              </p>
+              <p>
+                <strong>Score:</strong> {rating[0].ratingScore}
+              </p>
+              <ul className="ml-6 text-left">
+                <li>
+                  <strong>DCF:</strong>{' '}
+                  {rating[0].ratingDetailsDCFRecommendation} (Score:{' '}
+                  {rating[0].ratingDetailsDCFScore})
+                </li>
+                <li>
+                  <strong>DE:</strong> {rating[0].ratingDetailsDERecommendation}{' '}
+                  (Score: {rating[0].ratingDetailsDEScore})
+                </li>
+                <li>
+                  <strong>PB:</strong> {rating[0].ratingDetailsPBRecommendation}{' '}
+                  (Score: {rating[0].ratingDetailsPBScore})
+                </li>
+                <li>
+                  <strong>PE:</strong> {rating[0].ratingDetailsPERecommendation}{' '}
+                  (Score: {rating[0].ratingDetailsPEScore})
+                </li>
+                <li>
+                  <strong>ROA:</strong>{' '}
+                  {rating[0].ratingDetailsROARecommendation} (Score:{' '}
+                  {rating[0].ratingDetailsROAScore})
+                </li>
+                <li>
+                  <strong>ROE:</strong>{' '}
+                  {rating[0].ratingDetailsROERecommendation} (Score:{' '}
+                  {rating[0].ratingDetailsROEScore})
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+        <div className="w-max">
+          <p className="underline">Peers data for {companySymbol}</p>
+          {peers.map((peer, index) => (
+            <div key={`${peer}-${index}`}>{peer}</div>
+          ))}
+          <a
+            href="https://finnhub.io/docs/api/company-peers"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            View Peers on Finnhub
+          </a>
         </div>
       </div>
     </div>
