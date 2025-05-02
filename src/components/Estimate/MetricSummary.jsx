@@ -1,27 +1,22 @@
-import { useEffect, useState } from 'react';
-
-import { fetchCompanyNameBySymbol } from '../../services/finnhubService';
-
 export default function MetricSummary({
   title,
   data,
   companySymbol,
   metricKey,
 }) {
-  const [companies, setCompanies] = useState([]);
+  const transformData = (data, companySymbol, metricKey) => {
+    return data
+      .map((entry) => ({
+        symbol: entry.symbol,
+        name: entry.name,
+        [metricKey]: parseFloat(entry[metricKey]),
+        highlighted: entry.symbol === companySymbol,
+      }))
+      .filter((entry) => !isNaN(entry[metricKey]) && entry[metricKey] !== null)
+      .sort((a, b) => b[metricKey] - a[metricKey]);
+  };
 
-  useEffect(() => {
-    async function fetchAndTransformData() {
-      const transformedData = await transformData(
-        data,
-        companySymbol,
-        metricKey
-      );
-      setCompanies(transformedData);
-    }
-
-    fetchAndTransformData();
-  }, [data, companySymbol, metricKey]);
+  const companies = transformData(data, companySymbol, metricKey);
 
   const maxMetric =
     companies.length > 0
@@ -49,19 +44,25 @@ export default function MetricSummary({
       : sortedValues[mid];
   };
 
-  // Filters the companies to include up to two with higher metric values
-  // and up to three with lower metric values relative to the companySymbol,
-  // excluding those with NaN metric values.
   const filteredCompanies = () => {
     const validCompanies = companies.filter(
       (company) => !isNaN(company[metricKey])
+    );
+
+    const currentCompany = companies.find(
+      (company) => company.symbol === companySymbol
     );
 
     const currentIndex = validCompanies.findIndex(
       (company) => company.symbol === companySymbol
     );
 
-    if (currentIndex === -1) return [];
+    if (currentIndex === -1) {
+      if (currentCompany) {
+        return [currentCompany];
+      }
+      return [];
+    }
 
     const higherMetric = validCompanies.slice(0, currentIndex).slice(0, 2);
     const lowerMetric = validCompanies.slice(currentIndex + 1).slice(0, 3);
@@ -70,6 +71,22 @@ export default function MetricSummary({
   };
 
   const peerAvg = calculateMedian(data, metricKey);
+
+  const isCompanyPresent = companies.some(
+    (company) => company.symbol === companySymbol
+  );
+
+  if (!isCompanyPresent) {
+    return (
+      <div className="flex flex-col justify-center items-center w-9/12 mt-10">
+        <h2 className="text-xl font-bold mb-2 text-left">{title}</h2>
+        <p className="text-left text-red-500">
+          The data for the {metricKey.toUpperCase()} metric is not available for
+          the company {companySymbol}.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-center items-center w-9/12 mt-10">
@@ -117,20 +134,4 @@ export default function MetricSummary({
       </div>
     </div>
   );
-}
-
-async function transformData(data, companySymbol, metricKey) {
-  const transformedCompanies = await Promise.all(
-    data.map(async (entry) => {
-      const companyInfo = await fetchCompanyNameBySymbol(entry.symbol);
-      return {
-        symbol: entry.symbol,
-        name: companyInfo.name,
-        [metricKey]: parseFloat(entry[metricKey]),
-        highlighted: entry.symbol === companySymbol,
-      };
-    })
-  );
-
-  return transformedCompanies.sort((a, b) => b[metricKey] - a[metricKey]);
 }

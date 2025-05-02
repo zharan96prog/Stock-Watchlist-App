@@ -5,8 +5,8 @@ import { getPeers } from '../services/finnhubService.js';
 import { fetchRating } from '../services/fmpService.js';
 import Spinner from './UI/Spinner.jsx';
 import { usePeersFinancials } from '../hooks/usePeersFinancials.js';
-import MetricComparison from './Estimate/MetricComparison.jsx';
-import MetricSummary from './Estimate/MetricSummary.jsx';
+import MetricSummaries from './Estimate/MetricSummaries.jsx';
+import MetricComparisons from './Estimate/MetricComparisons.jsx';
 
 export default function Estimate() {
   const { companySymbol } = useParams();
@@ -14,120 +14,103 @@ export default function Estimate() {
   const [rating, setRating] = useState(null);
 
   useEffect(() => {
-    const fetchPeers = async () => {
+    const fetchPeersAndRating = async () => {
       try {
+        const storedData = JSON.parse(localStorage.getItem('companies')) || {};
+        const today = new Date().toISOString().split('T')[0];
+
+        if (
+          storedData[companySymbol]?.lastFetchedEstimateDate === today &&
+          storedData[companySymbol]?.peers
+        ) {
+          setPeers(storedData[companySymbol].peers);
+          setRating(storedData[companySymbol].rating || null);
+          return;
+        }
+
         const peers = await getPeers(companySymbol);
         const rating = await fetchRating(companySymbol);
 
         setPeers(peers);
+        console.log('Peers:', peers);
         setRating(rating);
+        localStorage.setItem(
+          'companies',
+          JSON.stringify({
+            ...storedData,
+            [companySymbol]: {
+              ...storedData[companySymbol],
+              lastFetchedEstimateDate: today,
+              peers,
+              rating,
+            },
+          })
+        );
       } catch (error) {
-        console.error('Error fetching peers:', error);
+        console.error('Error fetching peers or rating:', error);
       }
     };
 
-    fetchPeers();
+    fetchPeersAndRating();
   }, [companySymbol]);
 
   const {
     financials,
     loading: financialsLoading,
     error: financialsError,
-  } = usePeersFinancials(peers);
+  } = usePeersFinancials(peers, companySymbol);
 
-  const roeData = Object.entries(financials)
-    .map(([symbol, data]) => ({
-      symbol,
-      roe: data.roe !== undefined && data.roe !== 'N/A' ? data.roe : null,
-    }))
-    .filter((entry) => entry.roe !== null);
+  console.log('Financials:', financials);
 
-  const roaData = Object.entries(financials)
-    .map(([symbol, data]) => ({
-      symbol,
-      roa: data.roa !== undefined && data.roa !== 'N/A' ? data.roa : null,
-    }))
-    .filter((entry) => entry.roa !== null);
+  const comparisonsData = ['roe', 'roa', 'roic'].map((metricKey) => ({
+    metricKey,
+    data: Object.values(financials)
+      .map((entry) => ({
+        symbol: entry.symbol,
+        [metricKey]:
+          entry[metricKey] !== undefined && entry[metricKey] !== 'N/A'
+            ? entry[metricKey]
+            : null,
+      }))
+      .filter((entry) => entry[metricKey] !== null),
+  }));
 
-  const roicData = Object.entries(financials)
-    .map(([symbol, data]) => ({
-      symbol,
-      roic: data.roic !== undefined && data.roic !== 'N/A' ? data.roic : null,
-    }))
-    .filter((entry) => entry.roic !== null);
+  const summariesData = ['pe', 'ps', 'pb'].map((metricKey) => ({
+    metricKey,
+    data: Object.values(financials)
+      .map((entry) => ({
+        symbol: entry.symbol,
+        name: entry.name,
+        [metricKey]:
+          entry[metricKey] !== undefined && entry[metricKey] !== 'N/A'
+            ? entry[metricKey]
+            : null,
+      }))
+      .filter((entry) => entry[metricKey] !== null),
+  }));
 
-  const peData = Object.entries(financials)
-    .map(([symbol, data]) => ({
-      symbol,
-      pe: data.pe !== undefined && data.pe !== 'N/A' ? data.pe : null,
-    }))
-    .filter((entry) => entry.pe !== null);
+  if (financialsLoading) {
+    return <Spinner />;
+  }
 
-  const psData = Object.entries(financials)
-    .map(([symbol, data]) => ({
-      symbol,
-      ps: data.ps !== undefined && data.ps !== 'N/A' ? data.ps : null,
-    }))
-    .filter((entry) => entry.ps !== null);
-
-  const pbData = Object.entries(financials)
-    .map(([symbol, data]) => ({
-      symbol,
-      pb: data.pb !== undefined && data.pb !== 'N/A' ? data.pb : null,
-    }))
-    .filter((entry) => entry.pb !== null);
+  if (financialsError) {
+    return <p>Error loading financials</p>;
+  }
 
   return (
     <div>
       <div className="flex flex-row justify-center">
         <div className="w-max">
-          {financialsLoading ? (
-            <Spinner />
-          ) : financialsError ? (
-            <p>Error loading financials</p>
-          ) : (
-            <div className="flex flex-row">
-              <MetricComparison
-                title="Return on Equity (ROE)"
-                data={roeData}
-                companySymbol={companySymbol}
-                metricKey="roe"
-              ></MetricComparison>
-              <MetricComparison
-                title="Return on Equity (ROA)"
-                data={roaData}
-                companySymbol={companySymbol}
-                metricKey="roa"
-              ></MetricComparison>
-              <MetricComparison
-                title="Return on Invested Capital (ROIC)"
-                data={roicData}
-                companySymbol={companySymbol}
-                metricKey="roic"
-              ></MetricComparison>
-            </div>
-          )}
+          <div className="flex flex-row">
+            <MetricComparisons
+              data={comparisonsData}
+              companySymbol={companySymbol}
+            />
+          </div>
         </div>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <MetricSummary
-          title="Price to Earnings Ratio vs Peers"
-          companySymbol={companySymbol}
-          metricKey="pe"
-          data={peData}
-        />
-        <MetricSummary
-          title="Price to Sales Ratio vs Peers"
-          companySymbol={companySymbol}
-          metricKey="ps"
-          data={psData}
-        />
-        <MetricSummary
-          title="Price to Book Ratio vs Peers"
-          companySymbol={companySymbol}
-          metricKey="pb"
-          data={pbData}
-        />
+        <MetricSummaries data={summariesData} companySymbol={companySymbol} />
       </div>
       <div className="flex flex-row justify-center mt-10">
         <div className="w-max">
