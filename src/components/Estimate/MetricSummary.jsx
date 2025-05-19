@@ -106,7 +106,7 @@ export default function MetricSummary({
                   : '0%',
             }}
           >
-            <div className="absolute w-max -top-14 text-base bg-yellow-400 text-black p-2 rounded">
+            <div className="absolute w-max -top-14 text-base bg-yellow-400 text-black p-1 rounded">
               Peer Avg {peerAvg.toFixed(1)}x
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function MetricSummary({
             <div key={index} className="flex flex-col">
               <div className="flex items-center gap-2">
                 <div
-                  className="h-auto flex items-center justify-between p-3 text-sm font-semibold rounded-md"
+                  className="h-auto flex items-center justify-between p-2 text-sm font-semibold rounded-md"
                   style={{
                     width: `${(company[metricKey] / maxMetric) * 100}%`,
                     backgroundColor: company.highlighted
@@ -123,7 +123,7 @@ export default function MetricSummary({
                   }}
                 >
                   <div className="text-left">
-                    <p className="mb-2">{company[metricKey]}x</p>
+                    <p className="mb-1">{company[metricKey]}x</p>
                     <p>{company.name}</p>
                   </div>
                 </div>
