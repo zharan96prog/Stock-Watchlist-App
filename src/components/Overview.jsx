@@ -3,72 +3,102 @@ import Button from './UI/Button';
 
 export default function Overview({ companies }) {
   const truncatedDescription = companies.description
-    .split(' ')
-    .slice(0, 50)
-    .join(' '); // Обрізаємо текст
+    ? companies.description.split(' ').slice(0, 50).join(' ')
+    : 'No description available'; // Обрізаємо текст
 
   return (
     <div className="grid grid-cols-3 gap-4">
       <div className="col-span-2 grid grid-cols-2 gap-4">
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Market Cap ${companies.mktCap.toLocaleString()}
+          Market Cap $
+          {companies.marketCap ? companies.marketCap.toLocaleString() : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
           52-Week Range {companies.range}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Beta {companies.beta.toFixed(2)}
+          Beta{' '}
+          {companies.beta !== undefined && companies.beta !== null
+            ? companies.beta.toFixed(2)
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Dividend ${companies.lastDiv}{' '}
+          Dividend ${companies.lastDividend || companies.lastDiv || 'N/A'}{' '}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Open {companies.open}
+          Open{' '}
+          {companies.open !== undefined && companies.open !== null
+            ? companies.open
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Previous Close {companies.previousClose}
+          Previous Close{' '}
+          {companies.previousClose !== undefined &&
+          companies.previousClose !== null
+            ? companies.previousClose
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Volume {companies.volume.toLocaleString()}
+          Volume {companies.volume ? companies.volume.toLocaleString() : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          EPS (ttm) {companies.eps.toFixed(2)}
+          EPS (ttm){' '}
+          {companies.eps !== undefined && companies.eps !== null
+            ? companies.eps.toFixed(2)
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          PE Ratio {companies.pe.toFixed(2)}
+          PE Ratio{' '}
+          {companies.pe !== undefined && companies.pe !== null
+            ? companies.pe.toFixed(2)
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Shares Out {companies.sharesOutstanding.toLocaleString()}
+          Shares Out{' '}
+          {companies.sharesOutstanding
+            ? companies.sharesOutstanding.toLocaleString()
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Day Low {companies.dayLow.toFixed(2)}
+          Day Low{' '}
+          {companies.dayLow !== undefined && companies.dayLow !== null
+            ? companies.dayLow.toFixed(2)
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
-          Day High {companies.dayHigh.toFixed(2)}
+          Day High{' '}
+          {companies.dayHigh !== undefined && companies.dayHigh !== null
+            ? companies.dayHigh.toFixed(2)
+            : 'N/A'}
         </div>
         <div className="bg-primary-dark/10 p-4 rounded-lg">
           <p>Earnings Date Announcement</p>
           <p>
-            {new Date(companies.earningsAnnouncement).toLocaleDateString(
-              'en-US',
-              {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              }
-            )}
+            {companies.earningsAnnouncement
+              ? new Date(companies.earningsAnnouncement).toLocaleDateString(
+                  'en-US',
+                  {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }
+                )
+              : 'N/A'}
           </p>
         </div>
       </div>
 
       <div className="bg-primary-dark/10 p-4 rounded-lg">
-        <img
-          src={companies.image}
-          alt={`${companies.companyName} logo`}
-          className="mx-auto mb-4 h-20"
-        />
+        {companies.image && (
+          <img
+            src={companies.image}
+            alt={`${companies.companyName || 'Company'} logo`}
+            className="mx-auto mb-4 h-20"
+          />
+        )}
         <p className="text-sm text-primary-foreground/80 line-clamp-10">
-          {truncatedDescription}...
+          {truncatedDescription}
+          {companies.description && '...'}
           <Link
             to={`/watchlist/${companies.symbol}/profile`}
             className="text-blue-500 underline ml-2"

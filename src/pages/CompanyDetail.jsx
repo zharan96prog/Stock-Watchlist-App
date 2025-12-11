@@ -15,6 +15,8 @@ import News from '../components/News.jsx';
 import Forecast from '../components/Forecast.jsx';
 import Estimate from '../components/Estimate.jsx';
 import Financials from '../components/Financials.jsx';
+import FreePlanNotice from '../components/UI/FreePlanNotice.jsx';
+import { isAvailableOnFreePlan } from '../config/fmpFreeSymbols.js';
 
 export default function CompanyDetailPage() {
   const { companySymbol, tab = 'overview' } = useParams();
@@ -35,15 +37,30 @@ export default function CompanyDetailPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
 
         const [details, quote] = await Promise.all([
           fetchCompanyDetails(companySymbol),
           fetchCompanyQuote(companySymbol),
         ]);
 
-        setCompanyDetails({ ...details, ...quote });
+        // Об'єднуємо дані, враховуючи можливі розбіжності в назвах полів
+        const mergedData = {
+          ...details,
+          ...quote,
+          // Забезпечуємо сумісність назв полів
+          changes: quote?.change || details?.change || 0,
+          changesPercentage:
+            quote?.changePercentage || details?.changePercentage || 0,
+          companyName:
+            details?.companyName || details?.name || quote?.name || 'Unknown',
+          companySymbol: details?.symbol || quote?.symbol || companySymbol,
+        };
+
+        setCompanyDetails(mergedData);
       } catch (err) {
-        setError(err.message);
+        console.error('Error fetching company data:', err);
+        setError(err.message || 'Failed to load company data');
       } finally {
         setLoading(false);
       }
@@ -101,7 +118,43 @@ export default function CompanyDetailPage() {
   }
 
   if (error) {
-    return <p className="text-center mt-10 text-red-500">{error}</p>;
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">
+                  Помилка завантаження
+                </h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>{error}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {!isAvailableOnFreePlan(companySymbol) && <FreePlanNotice />}
+
+          <Button onClick={() => navigate('/watchlist')} className="mt-4">
+            Повернутись до списку
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   if (!companyDetails) {
@@ -151,20 +204,30 @@ export default function CompanyDetailPage() {
           </div>
           <div className="flex items-center">
             <h2 className="text-xl font-semibold mr-3">
-              {companyDetails.price.toFixed(2)}
+              {companyDetails.price ? companyDetails.price.toFixed(2) : 'N/A'}
             </h2>
-            <span
-              className={`${
-                companyDetails.changes > 0
-                  ? 'text-green-500'
-                  : companyDetails.changes < 0
-                  ? 'text-red-500'
-                  : 'text-gray-500'
-              }`}
-            >
-              {companyDetails.changes.toFixed(2)} (
-              {companyDetails.changesPercentage.toFixed(2)}%)
-            </span>
+            {companyDetails.changes !== undefined &&
+            companyDetails.changes !== null ? (
+              <span
+                className={`${
+                  companyDetails.changes > 0
+                    ? 'text-green-500'
+                    : companyDetails.changes < 0
+                    ? 'text-red-500'
+                    : 'text-gray-500'
+                }`}
+              >
+                {companyDetails.changes.toFixed(2)} (
+                {(
+                  companyDetails.changesPercentage ||
+                  companyDetails.changePercentage ||
+                  0
+                ).toFixed(2)}
+                %)
+              </span>
+            ) : (
+              <span className="text-gray-500">N/A</span>
+            )}
           </div>
         </div>
 
