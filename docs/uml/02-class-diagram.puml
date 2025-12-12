@@ -1,0 +1,138 @@
+@startuml ClassDiagram
+title Діаграма класів - Stock Watchlist Application
+
+skinparam classAttributeIconSize 0
+
+class User {
+  - userId: string
+  - email: string
+  - token: string
+  - createdAt: date
+  __methods__
+  + login(email, password): Promise<User>
+  + register(email, password): Promise<User>
+  + logout(): Promise<void>
+  + getIdToken(): Promise<string>
+}
+
+class Watchlist {
+  - watchlistId: string
+  - userId: string
+  - companies: Company[]
+  __methods__
+  + addCompany(company: Company): Promise<void>
+  + removeCompany(companyId: string): Promise<void>
+  + getCompanies(): Promise<Company[]>
+  + syncWithFirestore(): Promise<void>
+}
+
+class Company {
+  - symbol: string
+  - name: string
+  - price: number
+  - change: number
+  - changePercent: number
+  - marketCap: number
+  - country: string
+  - industry: string
+  - sector: string
+  - exchange: string
+  - currency: string
+  __methods__
+  + getDetails(): Promise<CompanyDetails>
+  + getQuote(): Promise<Quote>
+  + getProfile(): Promise<Profile>
+}
+
+class News {
+  - newsId: string
+  - companySymbol: string
+  - headline: string
+  - summary: string
+  - source: string
+  - datetime: date
+  - url: string
+  - image: string
+  __methods__
+  + getNewsBySymbol(symbol: string): Promise<News[]>
+  + filterByDateRange(from: date, to: date): News[]
+}
+
+class Forecast {
+  - forecastId: string
+  - companySymbol: string
+  - targetPrice: number
+  - targetPriceHigh: number
+  - targetPriceLow: number
+  - period: string
+  - analystRatings: AnalystRating[]
+  __methods__
+  + getForecast(symbol: string, period: string): Promise<Forecast>
+  + calculateConsensus(): number
+}
+
+class Financial {
+  - financialId: string
+  - companySymbol: string
+  - year: number
+  - quarter: string
+  - revenue: number
+  - netIncome: number
+  - eps: number
+  - assets: number
+  - liabilities: number
+  - equity: number
+  - operatingCashFlow: number
+  __methods__
+  + getIncome(symbol: string): Promise<IncomeStatement[]>
+  + getBalance(symbol: string): Promise<BalanceSheet[]>
+  + getCashFlow(symbol: string): Promise<CashFlowStatement[]>
+  + getRatios(symbol: string): Promise<FinancialRatios>
+}
+
+class Estimate {
+  - estimateId: string
+  - companySymbol: string
+  - estimatedEPS: number
+  - estimatedRevenue: number
+  - numberOfAnalysts: number
+  - fiscalYear: number
+  - fiscalQuarter: string
+  __methods__
+  + getEstimates(symbol: string): Promise<Estimate[]>
+  + compareWithActuals(): ComparisonResult
+}
+
+class AnalystRating {
+  - ratingId: string
+  - analystName: string
+  - rating: string
+  - targetPrice: number
+  - date: date
+}
+
+' Relationships
+User "1" -- "1" Watchlist : має >
+Watchlist "1" -- "*" Company : містить >
+Company "1" -- "*" News : має >
+Company "1" -- "*" Forecast : має >
+Company "1" -- "*" Financial : має >
+Company "1" -- "*" Estimate : має >
+Forecast "1" -- "*" AnalystRating : містить >
+
+note top of User
+  Зберігається в Firebase Auth
+  та частково в Firestore
+end note
+
+note bottom of Watchlist
+  Зберігається в Firestore
+  з прив'язкою до userId
+end note
+
+note right of Company
+  Дані з FMP API
+  та Finnhub API
+end note
+
+@enduml

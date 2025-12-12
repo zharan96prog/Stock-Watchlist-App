@@ -1,0 +1,109 @@
+@startuml DataFlowDiagram
+title Data Flow Diagram - Stock Watchlist Application
+
+!define RECTANGLE class
+
+skinparam component {
+  BackgroundColor<<external>> LightBlue
+  BackgroundColor<<internal>> LightGreen
+  BackgroundColor<<storage>> LightYellow
+}
+
+actor "User" as user
+
+rectangle "React Application" as app <<internal>> {
+  component "UI Components" as ui
+  component "Redux Store" as redux
+  component "Services Layer" as services
+}
+
+database "Firebase Firestore" as firestore <<storage>> {
+  collections "users"
+  collections "watchlist"
+}
+
+cloud "Finnhub API" as finnhub <<external>> {
+  interface "Stock Quotes" as quotes
+  interface "Company News" as news_api
+}
+
+cloud "FMP API" as fmp <<external>> {
+  interface "Company Profile" as profile
+  interface "Financials" as financials
+  interface "Estimates" as estimates
+  interface "Search" as search
+}
+
+database "IndexedDB\n(Local Cache)" as cache <<storage>>
+
+' User interactions
+user -> ui : (1) Взаємодія\n(клік, введення)
+ui --> user : (11) Відображення\nрезультатів
+
+' UI to Redux
+ui -> redux : (2) Dispatch actions
+redux --> ui : (10) State updates\n(re-render)
+
+' Redux to Services
+redux -> services : (3) Асинхронні\nзапити
+
+' Services to APIs
+services -> fmp : (4) HTTP GET\n(profile, financials)
+fmp --> services : (5) JSON response\n(company data)
+
+services -> finnhub : (6) HTTP GET\n(quotes, news)
+finnhub --> services : (7) JSON response\n(market data)
+
+' Services to Firebase
+services -> firestore : (8a) Read/Write\nwatchlist
+firestore --> services : (8b) Real-time\nsync
+
+' Caching
+services -> cache : (9a) Зберегти\nв кеш
+cache --> services : (9b) Завантажити\nз кешу
+
+' Data flows
+note right of user
+  **Користувач взаємодіє з:**
+  - Форми пошуку
+  - Списки watchlist
+  - Деталі компаній
+  - Графіки та таблиці
+end note
+
+note bottom of app
+  **Application Layer**
+  - React components (UI)
+  - Redux (state management)
+  - Axios/Fetch (HTTP clients)
+end note
+
+note bottom of firestore
+  **Persistent Storage**
+  - User accounts
+  - Watchlist data
+  - Real-time sync
+end note
+
+note bottom of cache
+  **Local Cache**
+  - Reduces API calls
+  - Faster load times
+  - Offline support
+end note
+
+note left of fmp
+  **Primary Data Source**
+  Rate limit: 250 calls/day (free)
+  Data: Financials, estimates,
+  analyst ratings, search
+end note
+
+note right of finnhub
+  **Secondary Data Source**
+  Rate limit: 60 calls/min (free)
+  Data: Real-time quotes,
+  company news, profiles
+end note
+
+@enduml

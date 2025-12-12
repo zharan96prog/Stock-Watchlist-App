@@ -1,0 +1,74 @@
+@startuml StateDiagram
+title Діаграма станів - Watchlist Item Lifecycle
+
+[*] --> NotInWatchlist
+
+state NotInWatchlist {
+  NotInWatchlist : entry / Показати кнопку "Add to Watchlist"
+  NotInWatchlist : entry / isInWatchlist = false
+  NotInWatchlist : Кнопка зелена з іконкою "+"
+}
+
+state Adding {
+  Adding : entry / Показати spinner
+  Adding : entry / isLoading = true
+  Adding : Відправка запиту до Firebase
+  Adding : Відправка запиту до FMP API
+}
+
+state InWatchlist {
+  InWatchlist : entry / Показати кнопку "Remove from Watchlist"
+  InWatchlist : entry / isInWatchlist = true
+  InWatchlist : Кнопка червона з іконкою "×"
+  InWatchlist : Компанія відображається в списку
+}
+
+state Removing {
+  Removing : entry / Показати spinner
+  Removing : entry / isLoading = true
+  Removing : Видалення з Firebase
+}
+
+state ViewingDetails {
+  ViewingDetails : Відображення детальної інформації
+  ViewingDetails : Завантаження додаткових даних
+  ViewingDetails : Вкладки: Overview, Profile, News, etc.
+}
+
+state Error {
+  Error : Показати повідомлення про помилку
+  Error : Відкат до попереднього стану
+}
+
+NotInWatchlist --> Adding : Користувач\nнатискає "Add"
+Adding --> InWatchlist : Успішно\nдодано
+Adding --> Error : Помилка API\nабо Firebase
+Error --> NotInWatchlist : Після 3 секунд
+
+InWatchlist --> Removing : Користувач\nнатискає "Remove"
+Removing --> NotInWatchlist : Успішно\nвидалено
+Removing --> Error : Помилка
+Error --> InWatchlist : Після 3 секунд
+
+InWatchlist --> ViewingDetails : Клік на\nкомпанію
+ViewingDetails --> InWatchlist : Повернення\nназад
+
+note right of Adding
+  Redux State:
+  - status: 'loading'
+  - error: null
+end note
+
+note right of InWatchlist
+  Redux State:
+  - status: 'succeeded'
+  - companies: [..., newCompany]
+end note
+
+note left of Error
+  Redux State:
+  - status: 'failed'
+  - error: errorMessage
+end note
+
+@enduml

@@ -1,0 +1,116 @@
+@startuml ERDiagram
+title ER Діаграма - Firebase Firestore Database
+
+' Styling
+skinparam linetype ortho
+skinparam backgroundColor #FEFEFE
+
+entity "Users" as users {
+  * **userId** : string <<PK>>
+  --
+  email : string <<unique>>
+  createdAt : timestamp
+  lastLogin : timestamp
+  displayName : string <<nullable>>
+  photoURL : string <<nullable>>
+  --
+  Indexes:
+  - email (unique)
+}
+
+entity "Watchlist" as watchlist {
+  * **id** : string <<PK, auto-generated>>
+  --
+  * userId : string <<FK>>
+  * symbol : string
+  name : string
+  price : number
+  change : number
+  changePercent : number
+  marketCap : number
+  exchange : string
+  currency : string
+  addedAt : timestamp
+  lastUpdated : timestamp
+  --
+  Indexes:
+  - userId
+  - symbol
+  - composite (userId + symbol)
+}
+
+' External data sources (not stored in Firestore)
+note top of users
+  **Firebase Authentication**
+  Основні дані користувача
+  зберігаються в Firebase Auth.
+  В Firestore додатково можна
+  зберігати профільну інформацію.
+end note
+
+note bottom of watchlist
+  **Watchlist Collection**
+  Кожен документ представляє
+  одну компанію в watchlist
+  конкретного користувача.
+  
+  Composite index (userId + symbol)
+  забезпечує швидкий пошук
+  та унікальність компанії
+  для користувача.
+end note
+
+' Relationships
+users ||--o{ watchlist : "має багато"
+
+note on link
+  Зв'язок 1:N
+  Один користувач може мати
+  багато компаній у watchlist
+end note
+
+' Virtual entities (from external APIs)
+entity "Company Data\n(FMP API)" as company {
+  symbol : string
+  name : string
+  description : string
+  sector : string
+  industry : string
+  country : string
+  --
+  Не зберігається локально
+  Отримується динамічно
+}
+
+entity "Financial Data\n(FMP API)" as financial {
+  income statements
+  balance sheets
+  cash flows
+  ratios
+  --
+  Отримується на запит
+}
+
+entity "News\n(Finnhub API)" as news {
+  headlines
+  summaries
+  sources
+  --
+  Кешується в IndexedDB
+}
+
+watchlist }o..|| company : "references"
+company ||..o{ financial : "has"
+company ||..o{ news : "has"
+
+note right of company
+  **Зовнішні API**
+  - FMP API (фінанси)
+  - Finnhub API (новини)
+  
+  Дані не зберігаються
+  в Firestore, а отримуються
+  в режимі реального часу
+end note
+
+@enduml

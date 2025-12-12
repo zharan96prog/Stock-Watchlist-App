@@ -1,0 +1,104 @@
+@startuml DeploymentDiagram
+title Діаграма розгортання - Stock Watchlist Application
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+
+node "Client Browser" <<device>> {
+  artifact "React SPA" as SPA {
+    component "HTML/CSS/JS Bundle"
+    component "React Components"
+    component "Redux Store"
+  }
+}
+
+node "CDN / Hosting Service\n(Netlify/Vercel/Firebase)" <<execution environment>> {
+  artifact "Static Files" as StaticFiles {
+    file "index.html"
+    file "main.js"
+    file "main.css"
+    file "assets/"
+  }
+}
+
+cloud "Firebase Cloud Platform" <<cloud>> {
+  database "Firestore Database" as Firestore {
+    collections "users"
+    collections "watchlist"
+  }
+  
+  component "Firebase Authentication" as FirebaseAuth {
+    interface "Email/Password Auth"
+  }
+  
+  component "Firebase Hosting" as FirebaseHosting
+}
+
+cloud "External API Services" <<cloud>> {
+  component "Financial Modeling Prep API" as FMPAPI {
+    interface "REST API"
+    interface "/api/v3/profile"
+    interface "/api/v3/quote"
+    interface "/api/v3/search"
+    interface "/api/v3/income-statement"
+    interface "/api/v3/analyst-estimates"
+  }
+  
+  component "Finnhub API" as FinnhubAPI {
+    interface "REST API"
+    interface "/stock/profile2"
+    interface "/quote"
+    interface "/company-news"
+  }
+}
+
+node "Developer Machine" <<device>> {
+  component "VS Code"
+  component "Node.js"
+  component "Vite Build Tool"
+}
+
+' Connections
+SPA -down-> StaticFiles : "HTTPS GET"
+SPA -down-> Firestore : "HTTPS/WSS\n(Real-time sync)"
+SPA -down-> FirebaseAuth : "HTTPS\n(Auth requests)"
+SPA -down-> FMPAPI : "HTTPS\n(Financial data)"
+SPA -down-> FinnhubAPI : "HTTPS\n(Stock quotes, news)"
+
+StaticFiles .up.> FirebaseHosting : "Deployed to"
+
+"Developer Machine" ..> StaticFiles : "Build & Deploy\n(npm run build)"
+
+note right of SPA
+  **Client-Side Application**
+  - Single Page Application (SPA)
+  - React 19.0.0
+  - Redux for state management
+  - Responsive design
+end note
+
+note bottom of Firestore
+  **Database Structure**
+  - NoSQL document-based
+  - Real-time synchronization
+  - Automatic scaling
+  - Collections: users, watchlist
+end note
+
+note bottom of FMPAPI
+  **Primary API**
+  Provides:
+  - Company financials
+  - Analyst estimates
+  - Price targets
+  - Search functionality
+end note
+
+note bottom of FinnhubAPI
+  **Secondary API**
+  Provides:
+  - Real-time quotes
+  - Company news
+  - Profile data
+end note
+
+@enduml

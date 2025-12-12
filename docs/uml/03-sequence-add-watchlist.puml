@@ -1,0 +1,47 @@
+@startuml SequenceAddWatchlist
+title Діаграма послідовності - Додавання компанії в Watchlist
+
+actor User
+participant "UI Component" as UI
+participant "Redux Store" as Redux
+participant "Watchlist Slice" as Slice
+participant "Firebase Firestore" as Firebase
+participant "FMP API" as API
+
+User -> UI: Натискає "Add to Watchlist"
+activate UI
+
+UI -> Redux: dispatch(addCompanyToWatchlist(company))
+activate Redux
+
+Redux -> Slice: createAsyncThunk
+activate Slice
+
+Slice -> API: fetchCompanyDetails(symbol)
+activate API
+API --> Slice: Повертає дані компанії
+deactivate API
+
+Slice -> Firebase: addDoc(collection('watchlist'), company)
+activate Firebase
+Firebase --> Slice: Повертає document ID
+deactivate Firebase
+
+Slice -> Slice: Оновлює state.companies
+Slice --> Redux: fulfilled(payload)
+deactivate Slice
+
+Redux -> Redux: Оновлює global state
+Redux --> UI: State оновлено
+deactivate Redux
+
+UI -> UI: Re-render компонента
+UI --> User: Показує повідомлення "Added to Watchlist"
+deactivate UI
+
+note right of User
+  Компанія тепер у
+  watchlist користувача
+end note
+
+@enduml

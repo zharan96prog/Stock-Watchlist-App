@@ -1,0 +1,57 @@
+@startuml UseCaseDiagram
+title Use Case Діаграма - Stock Watchlist System
+
+left to right direction
+actor "Користувач" as User
+actor "Неавторизований користувач" as Guest
+
+rectangle "Stock Watchlist System" {
+  usecase "Переглянути головну сторінку" as UC1
+  usecase "Зареєструватися" as UC2
+  usecase "Увійти в систему" as UC3
+  usecase "Вийти з системи" as UC4
+  usecase "Шукати компанії" as UC5
+  usecase "Додати компанію в watchlist" as UC6
+  usecase "Видалити компанію з watchlist" as UC7
+  usecase "Переглянути watchlist" as UC8
+  usecase "Переглянути деталі компанії" as UC9
+  usecase "Переглянути огляд компанії" as UC10
+  usecase "Переглянути профіль компанії" as UC11
+  usecase "Переглянути новини" as UC12
+  usecase "Переглянути прогнози" as UC13
+  usecase "Переглянути оцінки аналітиків" as UC14
+  usecase "Переглянути фінанси" as UC15
+}
+
+Guest --> UC1
+Guest --> UC2
+Guest --> UC3
+
+User --> UC1
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+User --> UC8
+User --> UC9
+
+UC9 ..> UC10 : <<include>>
+UC9 ..> UC11 : <<include>>
+UC9 ..> UC12 : <<include>>
+UC9 ..> UC13 : <<include>>
+UC9 ..> UC14 : <<include>>
+UC9 ..> UC15 : <<include>>
+
+UC6 ..> UC5 : <<extend>>
+
+note right of User
+  Авторизований користувач
+  має доступ до всіх функцій
+end note
+
+note right of Guest
+  Може тільки переглядати
+  та реєструватися
+end note
+
+@enduml

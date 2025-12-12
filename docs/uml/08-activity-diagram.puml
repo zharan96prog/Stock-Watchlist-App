@@ -1,0 +1,124 @@
+@startuml ActivityDiagram
+title Діаграма активності - Перегляд деталей компанії
+
+start
+
+:Користувач обирає компанію з watchlist;
+
+:Перехід на сторінку /watchlist/:symbol/:tab;
+
+partition "Завантаження даних" {
+  fork
+    :Завантаження деталей компанії\n(FMP API /profile);
+  fork again
+    :Завантаження котирувань\n(FMP API /quote);
+  end fork
+  
+  :Об'єднання даних\n(mergedData = {...details, ...quote});
+}
+
+if (Дані завантажені успішно?) then (так)
+  :Відображення вкладки Overview\nза замовчуванням;
+  
+  repeat
+    :Користувач може обрати вкладку;
+    
+    switch (Вибрана вкладка?)
+    case (Overview)
+      :Показати загальну інформацію;
+      :- Ціна акції;
+      :- Зміна ціни;
+      :- Ринкова капіталізація;
+      :- Оцінка компанії;
+      
+    case (Profile)
+      :Показати профіль компанії;
+      :- Опис бізнесу;
+      :- Індустрія, сектор;
+      :- Країна, CEO;
+      :- Веб-сайт;
+      
+    case (News)
+      partition "Завантаження новин" {
+        :Запит до Finnhub API\n/company-news;
+        if (Новини отримано?) then (так)
+          :Відобразити список новин\nз посиланнями;
+        else (ні)
+          :Показати "No news available";
+        endif
+      }
+      
+    case (Forecast)
+      partition "Завантаження прогнозів" {
+        :Запит до FMP API\n/price-target;
+        if (Прогнози отримано?) then (так)
+          :Відобразити графік прогнозів;
+          :Показати рекомендації аналітиків;
+        else (ні)
+          :Показати повідомлення\n"Available on paid plan";
+        endif
+      }
+      
+    case (Estimate)
+      partition "Завантаження оцінок" {
+        fork
+          :Запит оцінок компанії;
+        fork again
+          :Запит оцінок конкурентів;
+        end fork
+        
+        if (Дані отримано?) then (так)
+          :Відобразити таблицю порівнянь;
+          :EPS, Revenue, Growth;
+        else (ні)
+          :Показати "Data not available";
+        endif
+      }
+      
+    case (Financials)
+      partition "Завантаження фінансів" {
+        :Користувач обирає період\n(Annual/Quarter);
+        
+        switch (Підвкладка?)
+        case (Income)
+          :Запит /income-statement;
+          :Відобразити Revenue, Net Income, EPS;
+        case (Balance)
+          :Запит /balance-sheet-statement;
+          :Відобразити Assets, Liabilities, Equity;
+        case (Cash Flow)
+          :Запит /cash-flow-statement;
+          :Відобразити Operating, Investing, Financing CF;
+        case (Ratios)
+          :Запит /ratios;
+          :Відобразити P/E, P/B, ROE, ROA, Debt/Equity;
+        endswitch
+      }
+      
+    endswitch
+    
+  repeat while (Користувач залишається\nна сторінці?) is (так)
+  
+  :Користувач натискає "Back" або\nобирає іншу компанію;
+  
+else (ні)
+  :Показати повідомлення про помилку;
+  :Запропонувати повторити спробу;
+  
+  if (Користувач натискає "Retry"?) then (так)
+    :Повторне завантаження даних;
+  else (ні)
+    :Повернення до watchlist;
+  endif
+endif
+
+stop
+
+note right
+  **Кешування даних**
+  Деякі дані кешуються
+  в IndexedDB для підвищення
+  швидкості завантаження
+end note
+
+@enduml

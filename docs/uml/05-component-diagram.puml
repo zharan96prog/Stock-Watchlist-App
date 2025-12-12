@@ -1,0 +1,159 @@
+@startuml ComponentDiagram
+title Діаграма компонентів - Frontend Architecture
+
+package "Frontend Application" {
+  [React Application] as ReactApp
+  [Redux Store] as Store
+  [Router] as Router
+  
+  package "Pages" {
+    [Home Page] as Home
+    [Login Page] as Login
+    [Register Page] as Register
+    [Watchlist Page] as WatchlistPage
+    [Company Detail Page] as CompanyDetail
+    [About Page] as About
+    [Error Page] as Error
+  }
+  
+  package "Components" {
+    [MainNavigation] as Nav
+    [Watchlist] as WatchlistComp
+    [WatchlistItem] as WatchlistItem
+    [Overview] as Overview
+    [Profile] as Profile
+    [News] as News
+    [Forecast] as Forecast
+    [Estimate] as Estimate
+    [Financials] as Financials
+    
+    package "UI Components" {
+      [Button] as Button
+      [Input] as Input
+      [Spinner] as Spinner
+      [NotificationBadge] as Badge
+      [FreePlanNotice] as Notice
+    }
+    
+    package "Financial Components" {
+      [Income] as Income
+      [BalanceSheet] as Balance
+      [CashFlow] as CashFlow
+      [Ratios] as Ratios
+      [GrowthRow] as Growth
+    }
+    
+    package "Estimate Components" {
+      [MetricSummary] as Summary
+      [MetricSummaries] as Summaries
+      [MetricComparison] as Comparison
+      [MetricComparisons] as Comparisons
+    }
+  }
+  
+  package "Services" {
+    [FMP Service] as FMPService
+    [Finnhub Service] as FinnhubService
+  }
+  
+  package "Redux Slices" {
+    [Auth Slice] as AuthSlice
+    [Watchlist Slice] as WatchlistSlice
+  }
+  
+  package "Hooks" {
+    [useFinancialData] as FinHook
+    [usePeersFinancials] as PeersHook
+  }
+  
+  package "Utils" {
+    [evaluateCompany] as Evaluate
+    [forecastUtils] as ForecastUtil
+  }
+}
+
+package "Backend Services" {
+  [Firebase Auth] as FirebaseAuth
+  [Firebase Firestore] as Firestore
+}
+
+package "External APIs" {
+  [FMP API] as FMPAPI
+  [Finnhub API] as FinnhubAPI
+}
+
+' Main connections
+ReactApp --> Store
+ReactApp --> Router
+
+Router --> Home
+Router --> Login
+Router --> Register
+Router --> WatchlistPage
+Router --> CompanyDetail
+Router --> About
+Router --> Error
+
+' Page to Component connections
+Home --> Nav
+WatchlistPage --> Nav
+WatchlistPage --> WatchlistComp
+CompanyDetail --> Nav
+CompanyDetail --> Overview
+CompanyDetail --> Profile
+CompanyDetail --> News
+CompanyDetail --> Forecast
+CompanyDetail --> Estimate
+CompanyDetail --> Financials
+
+' Component relationships
+WatchlistComp --> WatchlistItem
+Financials --> Income
+Financials --> Balance
+Financials --> CashFlow
+Financials --> Ratios
+Financials --> Growth
+Estimate --> Summaries
+Estimate --> Comparisons
+Summaries --> Summary
+Comparisons --> Comparison
+
+' UI Component usage
+Nav --> Button
+WatchlistItem --> Button
+CompanyDetail --> Spinner
+CompanyDetail --> Badge
+CompanyDetail --> Notice
+
+' Redux connections
+AuthSlice --> Store
+WatchlistSlice --> Store
+Login --> AuthSlice
+Register --> AuthSlice
+WatchlistComp --> WatchlistSlice
+CompanyDetail --> WatchlistSlice
+
+' Service connections
+AuthSlice --> FirebaseAuth
+WatchlistSlice --> Firestore
+FMPService --> FMPAPI
+FinnhubService --> FinnhubAPI
+
+' Hook connections
+Financials --> FinHook
+Estimate --> PeersHook
+FinHook --> FMPService
+
+' Util connections
+Overview --> Evaluate
+Forecast --> ForecastUtil
+
+' API connections
+CompanyDetail --> FMPService
+CompanyDetail --> FinnhubService
+News --> FinnhubService
+Forecast --> FMPService
+Estimate --> FMPService
+Financials --> FMPService
+
+@enduml

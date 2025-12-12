@@ -1,0 +1,67 @@
+@startuml SequenceAuthentication
+title Діаграма послідовності - Автентифікація користувача
+
+actor User
+participant "Login Page" as UI
+participant "Redux Store" as Redux
+participant "Auth Slice" as AuthSlice
+participant "Firebase Auth" as Auth
+participant "Router" as Router
+
+User -> UI: Вводить email/password
+User -> UI: Натискає "Login"
+activate UI
+
+UI -> Redux: dispatch(loginUser({email, password, navigate}))
+activate Redux
+
+Redux -> AuthSlice: createAsyncThunk execution
+activate AuthSlice
+
+AuthSlice -> Auth: signInWithEmailAndPassword(auth, email, password)
+activate Auth
+
+alt Успішна автентифікація
+    Auth --> AuthSlice: userData (user object)
+    deactivate Auth
+    
+    AuthSlice -> Auth: user.getIdToken()
+    activate Auth
+    Auth --> AuthSlice: token (JWT)
+    deactivate Auth
+    
+    AuthSlice -> AuthSlice: Зберігає user.email, token
+    AuthSlice --> Redux: fulfilled({ email, token })
+    deactivate AuthSlice
+    
+    Redux -> Redux: Оновлює state:\n- user: email\n- token: JWT\n- isLoading: false
+    Redux --> UI: Dispatch завершено
+    deactivate Redux
+    
+    UI -> Router: navigate('/')
+    activate Router
+    Router --> User: Перенаправлення на головну сторінку
+    deactivate Router
+    
+else Помилка автентифікації
+    Auth --> AuthSlice: Error (invalid credentials)
+    deactivate Auth
+    
+    AuthSlice --> Redux: rejected(error.message)
+    deactivate AuthSlice
+    
+    Redux -> Redux: Оновлює state:\n- error: message\n- isLoading: false
+    Redux --> UI: Error state
+    deactivate Redux
+    
+    UI -> UI: Відображає повідомлення про помилку
+    UI --> User: "Invalid email or password"
+    deactivate UI
+end
+
+note over User, Router
+  Після успішного входу користувач
+  має доступ до захищених маршрутів
+end note
+
+@enduml
